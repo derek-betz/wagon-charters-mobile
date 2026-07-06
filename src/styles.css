@@ -32,7 +32,7 @@ body {
   background:
     radial-gradient(circle at 10% 8%, rgba(198, 79, 35, 0.12), transparent 24%),
     radial-gradient(circle at 88% 14%, rgba(143, 52, 22, 0.08), transparent 20%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    linear-gradient(180deg, #efe7da 0%, #e8dcc8 100%);
 }
 
 body::before {
@@ -43,7 +43,7 @@ body::before {
   background-image: linear-gradient(rgba(29, 20, 15, 0.024) 1px, transparent 1px),
     linear-gradient(90deg, rgba(29, 20, 15, 0.024) 1px, transparent 1px);
   background-size: 34px 34px;
-  opacity: 0.45;
+  opacity: 0.18;
 }
 
 a {
@@ -65,7 +65,31 @@ button {
   min-height: 100vh;
 }
 
+.page-frame {
+  position: relative;
+  min-height: 100vh;
+  background-color: #1e130f;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  isolation: isolate;
+}
+
+.page-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(22, 15, 12, 0.58) 0%, rgba(22, 15, 12, 0.38) 18%, rgba(22, 15, 12, 0.48) 100%),
+    radial-gradient(circle at 50% 12%, rgba(235, 212, 186, 0.24), transparent 28%),
+    radial-gradient(circle at 50% 84%, rgba(198, 79, 35, 0.1), transparent 30%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .page-shell {
+  position: relative;
+  z-index: 1;
   width: min(100%, 430px);
   margin: 0 auto;
   padding: 16px 16px 120px;
@@ -77,6 +101,12 @@ button {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 247, 238, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 247, 238, 0.72);
+  backdrop-filter: blur(10px) saturate(1.05);
+  box-shadow: 0 14px 30px rgba(17, 11, 9, 0.12);
 }
 
 .brand-lockup {
@@ -131,7 +161,7 @@ button {
 .ghost-link {
   padding: 10px 14px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 251, 247, 0.88);
   color: var(--text);
 }
 
@@ -192,8 +222,9 @@ h3 {
 .quote-card,
 .metric-card {
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--panel), var(--panel-strong));
+  background: linear-gradient(180deg, rgba(255, 249, 242, 0.76), rgba(255, 251, 247, 0.9));
   box-shadow: var(--shadow);
+  backdrop-filter: blur(10px) saturate(1.08);
 }
 
 .hero {
@@ -380,7 +411,8 @@ h3 {
   padding: 14px 16px 14px 18px;
   border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.66);
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(10px) saturate(1.05);
 }
 
 .trust-chip::before {
@@ -559,7 +591,7 @@ h3 {
   padding: 0 14px;
   border-radius: 12px;
   border: 1px solid rgba(29, 20, 15, 0.12);
-  background: rgba(255, 255, 255, 0.66);
+  background: rgba(255, 255, 255, 0.76);
   color: var(--text);
   outline: none;
 }
@@ -595,14 +627,14 @@ h3 {
   align-items: center;
   margin-top: 30px;
   padding: 16px 2px;
-  color: var(--muted);
-  border-top: 1px solid rgba(29, 20, 15, 0.12);
+  color: rgba(255, 247, 238, 0.74);
+  border-top: 1px solid rgba(255, 247, 238, 0.16);
 }
 
 .footer p {
   margin: 0;
   font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-  color: var(--text);
+  color: #fff8f0;
   letter-spacing: -0.04em;
 }
 
@@ -617,6 +649,11 @@ h3 {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   z-index: 30;
+}
+
+.sticky-cta .secondary {
+  background: rgba(255, 247, 238, 0.88);
+  backdrop-filter: blur(10px);
 }
 
 .sticky-cta .button {

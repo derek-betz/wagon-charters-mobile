@@ -6,6 +6,7 @@ import {
   highlights,
   metrics,
   originalShots,
+  pageBackdrop,
   steps,
   trustPoints,
 } from './content';
@@ -38,7 +39,8 @@ export default function App() {
   );
 
   return (
-    <div className="page-shell">
+    <div className="page-frame" style={{ backgroundImage: `url(${pageBackdrop})` }}>
+      <div className="page-shell">
       <header className="topbar">
         <div className="brand-lockup">
           <span className="brand-mark" aria-hidden="true">
@@ -262,6 +264,7 @@ export default function App() {
           Rides
         </a>
       </nav>
+      </div>
     </div>
   );
 }

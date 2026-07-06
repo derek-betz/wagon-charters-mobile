@@ -63,6 +63,8 @@ export const heroImages = [
   },
 ] as const;
 
+export const pageBackdrop = 'images/page-backdrop.jpg';
+
 export const originalShots = [
   {
     title: 'The bus, with the crew',
