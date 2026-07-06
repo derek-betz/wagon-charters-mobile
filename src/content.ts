@@ -63,6 +63,21 @@ export const heroImages = [
   },
 ] as const;
 
+export const originalShots = [
+  {
+    title: 'The bus, with the crew',
+    caption: 'Original site photo',
+    src: 'images/about-original.jpg',
+    alt: 'Maroon charter bus with a person standing beside it under trees',
+  },
+  {
+    title: 'The bus, at the wheel',
+    caption: 'Original site photo',
+    src: 'images/extra-original.jpg',
+    alt: 'Maroon charter bus with the driver visible through the windshield at sunset',
+  },
+] as const;
+
 export const faqs = [
   {
     question: 'Can I request a custom route?',

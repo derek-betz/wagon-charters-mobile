@@ -1,5 +1,14 @@
 import { useMemo, useState } from 'react';
-import { faqs, featuredRides, heroImages, highlights, metrics, steps, trustPoints } from './content';
+import {
+  faqs,
+  featuredRides,
+  heroImages,
+  highlights,
+  metrics,
+  originalShots,
+  steps,
+  trustPoints,
+} from './content';
 
 type RideId = (typeof featuredRides)[number]['id'];
 
@@ -98,6 +107,25 @@ export default function App() {
               {point}
             </div>
           ))}
+        </section>
+
+        <section className="section original-shots">
+          <div className="section-head">
+            <p className="section-label">Original site shots</p>
+            <h2>Same brand, but now the page has a real photo story instead of one image doing all the work.</h2>
+          </div>
+
+          <div className="shot-grid">
+            {originalShots.map((shot) => (
+              <figure className="shot-card" key={shot.title}>
+                <img src={shot.src} alt={shot.alt} loading="lazy" />
+                <figcaption>
+                  <span>{shot.caption}</span>
+                  <strong>{shot.title}</strong>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </section>
 
         <section className="section" id="rides">
