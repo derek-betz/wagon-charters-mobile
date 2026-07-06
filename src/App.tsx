@@ -114,7 +114,7 @@ export default function App() {
                 <article className={`ride-card ${isActive ? 'is-active' : ''}`} key={ride.id}>
                   <button className="ride-select" onClick={() => setSelectedRide(ride.id)} type="button">
                     <figure className="ride-photo">
-                      <img src={ride.image} alt={ride.name} loading="lazy" />
+                      <img src={ride.image} alt={ride.imageAlt} loading="lazy" />
                     </figure>
                     <div className="ride-head">
                       <span className="ride-badge">{ride.badge}</span>
