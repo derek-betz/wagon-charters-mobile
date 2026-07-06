@@ -6,7 +6,7 @@ export const featuredRides = [
     badge: 'Most booked',
     route: 'Denver area to Red Rocks and back',
     accent: 'Sunset route',
-    image: 'images/red-rocks-special.jpg',
+    image: 'images/red-rocks-original.jpg',
     imageAlt: 'Maroon charter bus parked in daylight',
     details: ['Private charter', 'Group-friendly', 'Easy quote'],
   },
@@ -17,7 +17,7 @@ export const featuredRides = [
     badge: 'Best for groups',
     route: 'Custom pickup and dropoff',
     accent: 'Night route',
-    image: 'images/booze-cruise.jpg',
+    image: 'images/booze-original.jpg',
     imageAlt: 'Maroon charter bus at blue hour',
     details: ['Flexible timing', 'Local routes', 'Custom itinerary'],
   },
@@ -58,7 +58,7 @@ export const metrics = [
 
 export const heroImages = [
   {
-    src: 'images/hero-bus.jpg',
+    src: 'images/hero-original.jpg',
     alt: 'Maroon charter bus at Red Rocks',
   },
 ] as const;
