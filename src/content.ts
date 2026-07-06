@@ -2,31 +2,29 @@ export const featuredRides = [
   {
     id: 'red-rocks',
     name: 'Red Rocks Special',
-    blurb: 'Door-to-door service for concerts, weddings, and group nights that should end with everyone arriving upright.',
+    blurb: 'Door-to-door runs for concerts, weddings, and everyone who wants to get there together.',
     badge: 'Most booked',
     route: 'Denver area to Red Rocks and back',
     accent: 'Sunset route',
-    image:
-      'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/e6bbb916-9ed1-434a-8d96-d84dd0b2c3cf/redrocks2.jpg?format=1500w',
+    image: '/images/red-rocks-special.jpg',
     details: ['Private charter', 'Group-friendly', 'Easy quote'],
   },
   {
     id: 'booze-cruise',
     name: 'Booze Cruise',
-    blurb: 'A flexible ride for brewery loops, birthday chaos, and anywhere the night gets better after the first stop.',
+    blurb: 'A flexible ride for brewery loops, birthday chaos, and nights that need a designated driver with taste.',
     badge: 'Best for groups',
     route: 'Custom pickup and dropoff',
     accent: 'Night route',
-    image:
-      'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/fd5714b4-b8c5-4aec-bfaa-8a8101640a69/IMG_2522.jpeg?format=1500w',
+    image: '/images/booze-cruise.jpg',
     details: ['Flexible timing', 'Local routes', 'Custom itinerary'],
   },
 ] as const;
 
 export const trustPoints = [
-  'Mobile quote flow built to finish in under a minute',
-  'Clear ride options without hunting through five pages of fluff',
-  'Trust-forward layout with service area and booking details up front',
+  'No weird booking maze',
+  'Real photos, not stock nonsense',
+  'Fast quote flow for mobile',
 ] as const;
 
 export const steps = [
@@ -45,9 +43,9 @@ export const steps = [
 ] as const;
 
 export const highlights = [
-  'Premium charter vibes',
-  'Mobile-first booking',
-  'Big type. Bigger attitude.',
+  'Red Rocks nights',
+  'Brewery crawls',
+  'Ski-town weekend runs',
 ] as const;
 
 export const metrics = [
@@ -58,27 +56,19 @@ export const metrics = [
 
 export const heroImages = [
   {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/e6bbb916-9ed1-434a-8d96-d84dd0b2c3cf/redrocks2.jpg?format=1500w',
+    src: '/images/hero-bus.jpg',
     alt: 'Maroon charter bus on a bright day',
-  },
-  {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/48692b27-eeec-4249-b913-5e78f2099907/IMG_3971.jpg?format=1500w',
-    alt: 'Charter bus parked with a wide open view',
-  },
-  {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/fd5714b4-b8c5-4aec-bfaa-8a8101640a69/IMG_2522.jpeg?format=1500w',
-    alt: 'Charter bus at a scenic stop',
   },
 ] as const;
 
 export const faqs = [
   {
     question: 'Can I request a custom route?',
-    answer: 'Yep. The new flow is built around quotes, so custom pickup and dropoff is part of the plan.',
+    answer: 'Yep. Custom pickup and dropoff are part of the plan.',
   },
   {
     question: 'Is this only for Red Rocks?',
-    answer: 'No. Red Rocks is the hero offer, but the site also supports custom group rides and booze-cruise style outings.',
+    answer: 'No. Red Rocks is the headline, but the site also covers brewery runs and custom group trips.',
   },
   {
     question: 'Will desktop come later?',

@@ -1,19 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
 
 :root {
   color-scheme: light;
-  --bg: #f6f0e7;
-  --bg-2: #efe5d5;
-  --text: #20160f;
-  --muted: rgba(32, 22, 15, 0.72);
-  --muted-2: rgba(32, 22, 15, 0.54);
-  --panel: rgba(255, 255, 255, 0.56);
-  --panel-2: rgba(255, 255, 255, 0.72);
-  --line: rgba(32, 22, 15, 0.12);
-  --accent: #c85c2e;
-  --accent-2: #9c3d1f;
-  --accent-soft: rgba(200, 92, 46, 0.12);
-  --shadow: 0 18px 48px rgba(58, 39, 20, 0.12);
+  --bg: #f5efe4;
+  --bg-2: #efe4d2;
+  --text: #1d140f;
+  --muted: rgba(29, 20, 15, 0.72);
+  --muted-2: rgba(29, 20, 15, 0.52);
+  --panel: rgba(255, 255, 255, 0.72);
+  --panel-strong: rgba(255, 255, 255, 0.9);
+  --line: rgba(29, 20, 15, 0.12);
+  --accent: #c64f23;
+  --accent-2: #8f3416;
+  --accent-soft: rgba(198, 79, 35, 0.12);
+  --shadow: 0 18px 40px rgba(51, 34, 21, 0.11);
 }
 
 * {
@@ -30,8 +30,8 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(200, 92, 46, 0.12), transparent 26%),
-    radial-gradient(circle at top right, rgba(156, 61, 31, 0.08), transparent 22%),
+    radial-gradient(circle at 10% 8%, rgba(198, 79, 35, 0.12), transparent 24%),
+    radial-gradient(circle at 88% 14%, rgba(143, 52, 22, 0.08), transparent 20%),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
 }
 
@@ -40,10 +40,10 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(32, 22, 15, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(32, 22, 15, 0.025) 1px, transparent 1px);
-  background-size: 32px 32px;
-  opacity: 0.5;
+  background-image: linear-gradient(rgba(29, 20, 15, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 20, 15, 0.024) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.45;
 }
 
 a {
@@ -92,11 +92,11 @@ button {
   display: grid;
   place-items: center;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   letter-spacing: 0.04em;
-  color: #fff7ef;
-  background: linear-gradient(135deg, #4b2517, #b84f29 70%, #db7b3f);
-  box-shadow: 0 8px 18px rgba(75, 37, 23, 0.25);
+  color: #fff6ed;
+  background: linear-gradient(135deg, #421f14 0%, #a94621 58%, #d46e33 100%);
+  box-shadow: 0 10px 18px rgba(66, 31, 20, 0.18);
 }
 
 .eyebrow,
@@ -104,20 +104,21 @@ button {
 .hero-kicker {
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  font-size: 0.66rem;
   color: var(--accent);
+  font-weight: 700;
 }
 
 .topline {
   margin: 4px 0 0;
   color: var(--muted-2);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
 }
 
 .ghost-link,
 .button {
-  border-radius: 999px;
+  border-radius: 14px;
   font-weight: 700;
   transition:
     transform 160ms ease,
@@ -130,7 +131,7 @@ button {
 .ghost-link {
   padding: 10px 14px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.58);
   color: var(--text);
 }
 
@@ -149,38 +150,39 @@ button {
 }
 
 .primary {
-  color: #fff7ef;
-  background: linear-gradient(135deg, #4b2517 0%, #9c3d1f 45%, #c85c2e 100%);
-  box-shadow: 0 12px 24px rgba(200, 92, 46, 0.22);
+  color: #fff6ed;
+  background: linear-gradient(135deg, #421f14 0%, #a94621 58%, #d46e33 100%);
+  box-shadow: 0 12px 24px rgba(198, 79, 35, 0.2);
 }
 
 .secondary {
   color: var(--text);
   border-color: var(--line);
-  background: rgba(255, 255, 255, 0.46);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 h1,
 h2,
 h3 {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  font-weight: 700;
 }
 
 h1 {
-  font-size: clamp(2.15rem, 8.8vw, 2.9rem);
-  max-width: 9.5ch;
+  font-size: clamp(1.95rem, 7.3vw, 2.55rem);
+  max-width: 11ch;
 }
 
 h2 {
-  font-size: clamp(1.55rem, 6vw, 2rem);
-  max-width: 15ch;
+  font-size: clamp(1.42rem, 5.4vw, 1.85rem);
+  max-width: 16ch;
 }
 
 h3 {
-  font-size: 1.22rem;
+  font-size: 1.08rem;
 }
 
 .hero,
@@ -190,28 +192,26 @@ h3 {
 .quote-card,
 .metric-card {
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  background: linear-gradient(180deg, var(--panel), var(--panel-strong));
   box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
 }
 
 .hero {
   display: grid;
   gap: 16px;
-  border-radius: 24px;
+  border-radius: 18px;
   padding: 14px;
 }
 
 .hero-media {
   display: grid;
-  gap: 10px;
 }
 
 .hero-photo {
   margin: 0;
   overflow: hidden;
-  border-radius: 20px;
-  border: 1px solid rgba(32, 22, 15, 0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(29, 20, 15, 0.08);
 }
 
 .hero-photo img,
@@ -224,16 +224,21 @@ h3 {
 
 .hero-photo-large {
   aspect-ratio: 4 / 3;
+  position: relative;
 }
 
-.hero-photo-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.hero-photo-small {
-  aspect-ratio: 1 / 1;
+.hero-photo-large figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 246, 237, 0.88);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hero-copy-wrap {
@@ -244,8 +249,8 @@ h3 {
 .hero-copy {
   margin: 0;
   color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.65;
+  font-size: 0.95rem;
+  line-height: 1.58;
 }
 
 .hero-actions,
@@ -266,11 +271,11 @@ h3 {
   align-items: center;
   min-height: 32px;
   padding: 0 11px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: var(--accent-soft);
-  border: 1px solid rgba(200, 92, 46, 0.16);
+  border: 1px solid rgba(198, 79, 35, 0.16);
   color: var(--accent-2);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -284,12 +289,12 @@ h3 {
   display: grid;
   gap: 4px;
   padding: 14px 12px;
-  border-radius: 18px;
+  border-radius: 14px;
 }
 
 .metric-card strong {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.42rem;
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-size: 1.2rem;
   line-height: 1;
 }
 
@@ -308,9 +313,9 @@ h3 {
 .trust-chip {
   position: relative;
   padding: 14px 16px 14px 18px;
-  border-radius: 18px;
+  border-radius: 14px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.66);
 }
 
 .trust-chip::before {
@@ -320,12 +325,12 @@ h3 {
   top: 0;
   bottom: 0;
   width: 4px;
-  border-radius: 18px 0 0 18px;
+  border-radius: 14px 0 0 14px;
   background: linear-gradient(180deg, var(--accent), var(--accent-2));
 }
 
 .section {
-  margin: 30px 0;
+  margin: 28px 0;
 }
 
 .section-head {
@@ -347,7 +352,7 @@ h3 {
 }
 
 .ride-card {
-  border-radius: 22px;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -363,13 +368,13 @@ h3 {
 .ride-photo {
   margin: 0 0 12px;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 14px;
   aspect-ratio: 16 / 10;
 }
 
 .ride-card.is-active {
-  border-color: rgba(200, 92, 46, 0.34);
-  box-shadow: 0 14px 28px rgba(58, 39, 20, 0.1);
+  border-color: rgba(198, 79, 35, 0.34);
+  box-shadow: 0 14px 28px rgba(51, 34, 21, 0.1);
 }
 
 .ride-head {
@@ -385,10 +390,10 @@ h3 {
   align-items: center;
   justify-content: center;
   padding: 5px 9px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.52);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.56);
   color: var(--accent-2);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -396,14 +401,14 @@ h3 {
 
 .ride-accent {
   color: var(--muted-2);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 
 .ride-select h3 {
   margin-top: 12px;
-  font-size: 1.42rem;
+  font-size: 1.18rem;
 }
 
 .ride-select p,
@@ -431,10 +436,10 @@ h3 {
 
 .ride-select li {
   padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.58);
   color: var(--text);
-  font-size: 0.79rem;
+  font-size: 0.78rem;
 }
 
 .ride-footer {
@@ -443,15 +448,15 @@ h3 {
   gap: 10px;
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid rgba(32, 22, 15, 0.1);
-  font-size: 0.84rem;
+  border-top: 1px solid rgba(29, 20, 15, 0.1);
+  font-size: 0.82rem;
 }
 
 .step-card,
 .faq-card {
   position: relative;
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 16px;
 }
 
 .step-card {
@@ -473,7 +478,7 @@ h3 {
   display: grid;
   gap: 14px;
   padding: 16px;
-  border-radius: 22px;
+  border-radius: 18px;
 }
 
 .quote-card label {
@@ -487,25 +492,25 @@ h3 {
   width: 100%;
   min-height: 48px;
   padding: 0 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(32, 22, 15, 0.12);
-  background: rgba(255, 255, 255, 0.58);
+  border-radius: 12px;
+  border: 1px solid rgba(29, 20, 15, 0.12);
+  background: rgba(255, 255, 255, 0.66);
   color: var(--text);
   outline: none;
 }
 
 .quote-card input::placeholder {
-  color: rgba(32, 22, 15, 0.42);
+  color: rgba(29, 20, 15, 0.42);
 }
 
 .quote-card input:focus,
 .quote-card select:focus {
-  border-color: rgba(200, 92, 46, 0.45);
-  box-shadow: 0 0 0 4px rgba(200, 92, 46, 0.1);
+  border-color: rgba(198, 79, 35, 0.45);
+  box-shadow: 0 0 0 4px rgba(198, 79, 35, 0.1);
 }
 
 .faq-card {
-  border-radius: 18px;
+  border-radius: 14px;
 }
 
 .faq-card summary {
@@ -526,13 +531,14 @@ h3 {
   margin-top: 30px;
   padding: 16px 2px;
   color: var(--muted);
-  border-top: 1px solid rgba(32, 22, 15, 0.12);
+  border-top: 1px solid rgba(29, 20, 15, 0.12);
 }
 
 .footer p {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   color: var(--text);
+  letter-spacing: -0.04em;
 }
 
 .sticky-cta {
@@ -559,20 +565,21 @@ h3 {
   }
 
   .hero {
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: 1fr 0.92fr;
     align-items: start;
   }
 
   .hero-copy-wrap {
-    grid-column: 1;
+    grid-column: 2;
   }
 
   .hero-media {
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 1 / span 2;
   }
 
   .metrics-grid {
-    grid-column: 1 / -1;
+    grid-column: 2;
   }
 
   .ride-list,

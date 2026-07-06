@@ -37,7 +37,7 @@ export default function App() {
           </span>
           <div>
             <p className="eyebrow">Wagon Charters</p>
-            <p className="topline">Private transportation in Denver, Colorado</p>
+            <p className="topline">Denver charter rides for late nights and loud groups</p>
           </div>
         </div>
         <a className="ghost-link" href="#quote">
@@ -50,23 +50,18 @@ export default function App() {
           <div className="hero-media">
             <figure className="hero-photo hero-photo-large">
               <img src={heroImages[0].src} alt={heroImages[0].alt} loading="eager" />
+              <figcaption>
+                <span>Denver / Red Rocks / private charter</span>
+              </figcaption>
             </figure>
-            <div className="hero-photo-row">
-              <figure className="hero-photo hero-photo-small">
-                <img src={heroImages[1].src} alt={heroImages[1].alt} loading="lazy" />
-              </figure>
-              <figure className="hero-photo hero-photo-small">
-                <img src={heroImages[2].src} alt={heroImages[2].alt} loading="lazy" />
-              </figure>
-            </div>
           </div>
 
           <div className="hero-copy-wrap">
-            <p className="hero-kicker">Red Rocks. Breweries. Weddings. Nights out.</p>
-            <h1>A charter site that finally looks like a real brand.</h1>
+            <p className="hero-kicker">Red Rocks. Breweries. Ski-town weekends.</p>
+            <h1>Private rides for loud groups and late nights.</h1>
             <p className="hero-copy">
-              Clean mobile layout, real photography from the original site, and just enough attitude to feel premium
-              without becoming a glitter bomb.
+              Real photography, cleaner booking, and a tone that feels like the kind of place your friends would
+              actually book.
             </p>
 
             <div className="hero-actions">
@@ -108,7 +103,7 @@ export default function App() {
         <section className="section" id="rides">
           <div className="section-head">
             <p className="section-label">Choose your ride</p>
-            <h2>Photographic ride cards with a little less nonsense.</h2>
+            <h2>Two trip types, both built to look good on a phone.</h2>
           </div>
 
           <div className="ride-list">
@@ -146,7 +141,7 @@ export default function App() {
         <section className="section split-section">
           <div className="section-head">
             <p className="section-label">How it works</p>
-            <h2>Three taps, no drama.</h2>
+            <h2>Three taps. No bullshit.</h2>
           </div>
 
           <div className="step-list">
@@ -164,10 +159,10 @@ export default function App() {
           <div className="quote-banner">
             <div>
               <p className="section-label">Request a quote</p>
-              <h2>Short form. Strong outcome.</h2>
+              <h2>Short form. Fast answer.</h2>
             </div>
             <p>
-              The point is to look trustworthy and polished fast. Fill the details, send the request, and move on.
+              Send the details and get a straight answer without the usual booking nonsense.
             </p>
           </div>
 
@@ -212,7 +207,7 @@ export default function App() {
         <section className="section faq-section">
           <div className="section-head">
             <p className="section-label">Questions people ask</p>
-            <h2>Clear answers sell the trip harder than hype does.</h2>
+            <h2>Quick answers, because nobody wants a scavenger hunt.</h2>
           </div>
 
           <div className="faq-list">
@@ -228,7 +223,7 @@ export default function App() {
 
       <footer className="footer">
         <p>{activeRide.name}</p>
-        <span>Built for mobile first, then dressed like a million bucks.</span>
+        <span>Built for mobile first, with actual taste.</span>
       </footer>
 
       <nav className="sticky-cta" aria-label="Quick actions">
