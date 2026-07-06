@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { faqs, featuredRides, highlights, metrics, steps, trustPoints } from './content';
+import { faqs, featuredRides, heroImages, highlights, metrics, steps, trustPoints } from './content';
 
 type RideId = (typeof featuredRides)[number]['id'];
 
@@ -37,7 +37,7 @@ export default function App() {
           </span>
           <div>
             <p className="eyebrow">Wagon Charters</p>
-            <p className="topline">Mobile-first charter experiences</p>
+            <p className="topline">Private transportation in Denver, Colorado</p>
           </div>
         </div>
         <a className="ghost-link" href="#quote">
@@ -47,12 +47,26 @@ export default function App() {
 
       <main>
         <section className="hero">
+          <div className="hero-media">
+            <figure className="hero-photo hero-photo-large">
+              <img src={heroImages[0].src} alt={heroImages[0].alt} loading="eager" />
+            </figure>
+            <div className="hero-photo-row">
+              <figure className="hero-photo hero-photo-small">
+                <img src={heroImages[1].src} alt={heroImages[1].alt} loading="lazy" />
+              </figure>
+              <figure className="hero-photo hero-photo-small">
+                <img src={heroImages[2].src} alt={heroImages[2].alt} loading="lazy" />
+              </figure>
+            </div>
+          </div>
+
           <div className="hero-copy-wrap">
-            <p className="hero-kicker">Red Rocks. Booze Cruise. Custom rides.</p>
-            <h1>Charter booking with main-character energy.</h1>
+            <p className="hero-kicker">Red Rocks. Breweries. Weddings. Nights out.</p>
+            <h1>A charter site that finally looks like a real brand.</h1>
             <p className="hero-copy">
-              A bold mobile-first rebuild that makes Wagon Charters feel premium, cinematic, and easier to trust at
-              a glance.
+              Clean mobile layout, real photography from the original site, and just enough attitude to feel premium
+              without becoming a glitter bomb.
             </p>
 
             <div className="hero-actions">
@@ -70,27 +84,6 @@ export default function App() {
                   {item}
                 </span>
               ))}
-            </div>
-          </div>
-
-          <div className="hero-scene" aria-hidden="true">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="scene-surface">
-              <div className="scene-topline">
-                <span className="scene-live">Live route</span>
-                <span>{activeRide.accent}</span>
-              </div>
-              <div className="scene-route">
-                <span>DENVER</span>
-                <span>+</span>
-                <span>RED ROCKS</span>
-              </div>
-              <div className="scene-card">
-                <p>{activeRide.name}</p>
-                <strong>{activeRide.badge}</strong>
-                <span>{activeRide.route}</span>
-              </div>
             </div>
           </div>
 
@@ -115,7 +108,7 @@ export default function App() {
         <section className="section" id="rides">
           <div className="section-head">
             <p className="section-label">Choose your ride</p>
-            <h2>Two offers, now presented like hero products instead of admin items.</h2>
+            <h2>Photographic ride cards with a little less nonsense.</h2>
           </div>
 
           <div className="ride-list">
@@ -125,6 +118,9 @@ export default function App() {
               return (
                 <article className={`ride-card ${isActive ? 'is-active' : ''}`} key={ride.id}>
                   <button className="ride-select" onClick={() => setSelectedRide(ride.id)} type="button">
+                    <figure className="ride-photo">
+                      <img src={ride.image} alt={ride.name} loading="lazy" />
+                    </figure>
                     <div className="ride-head">
                       <span className="ride-badge">{ride.badge}</span>
                       <span className="ride-accent">{ride.accent}</span>
@@ -171,7 +167,7 @@ export default function App() {
               <h2>Short form. Strong outcome.</h2>
             </div>
             <p>
-              This block is intentionally punchy: enough to sell the trip, not enough to bore people to death.
+              The point is to look trustworthy and polished fast. Fill the details, send the request, and move on.
             </p>
           </div>
 
