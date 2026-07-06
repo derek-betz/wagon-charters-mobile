@@ -58,15 +58,15 @@ export const metrics = [
 
 export const heroImages = [
   {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/48692b27-eeec-4249-b913-5e78f2099907/IMG_3971.jpg?format=1500w',
+    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/e6bbb916-9ed1-434a-8d96-d84dd0b2c3cf/redrocks2.jpg?format=1500w',
     alt: 'Maroon charter bus on a bright day',
   },
   {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/e6bbb916-9ed1-434a-8d96-d84dd0b2c3cf/redrocks2.jpg?format=1500w',
+    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/48692b27-eeec-4249-b913-5e78f2099907/IMG_3971.jpg?format=1500w',
     alt: 'Charter bus parked with a wide open view',
   },
   {
-    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/4491abb3-683a-47f2-ab4e-4a8b1f97f049/IMG_3170.jpg?format=1500w',
+    src: 'https://images.squarespace-cdn.com/content/v1/69d1df54e9744d79abd062d2/fd5714b4-b8c5-4aec-bfaa-8a8101640a69/IMG_2522.jpeg?format=1500w',
     alt: 'Charter bus at a scenic stop',
   },
 ] as const;
