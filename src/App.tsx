@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { faqs, featuredRides, steps, trustPoints } from './content';
+import { faqs, featuredRides, highlights, metrics, steps, trustPoints } from './content';
 
 type RideId = (typeof featuredRides)[number]['id'];
 
@@ -31,9 +31,14 @@ export default function App() {
   return (
     <div className="page-shell">
       <header className="topbar">
-        <div>
-          <p className="eyebrow">Wagon Charters</p>
-          <h1>Charter rides that are easier to book on a phone than most apps are on a laptop.</h1>
+        <div className="brand-lockup">
+          <span className="brand-mark" aria-hidden="true">
+            WC
+          </span>
+          <div>
+            <p className="eyebrow">Wagon Charters</p>
+            <p className="topline">Mobile-first charter experiences</p>
+          </div>
         </div>
         <a className="ghost-link" href="#quote">
           Get a quote
@@ -41,35 +46,61 @@ export default function App() {
       </header>
 
       <main>
-        <section className="hero card">
-          <p className="hero-kicker">Mobile-first rebuild</p>
-          <p className="hero-copy">
-            A cleaner, faster way to book Red Rocks runs, Booze Cruise trips, and custom rides without the old-site
-            scavenger hunt.
-          </p>
+        <section className="hero">
+          <div className="hero-copy-wrap">
+            <p className="hero-kicker">Red Rocks. Booze Cruise. Custom rides.</p>
+            <h1>Charter booking with main-character energy.</h1>
+            <p className="hero-copy">
+              A bold mobile-first rebuild that makes Wagon Charters feel premium, cinematic, and easier to trust at
+              a glance.
+            </p>
 
-          <div className="hero-actions">
-            <a className="button primary" href="#rides">
-              View rides
-            </a>
-            <a className="button secondary" href={`mailto:?subject=${quoteSubject}&body=${quoteBody}`}>
-              Start quote
-            </a>
+            <div className="hero-actions">
+              <a className="button primary" href="#rides">
+                Explore rides
+              </a>
+              <a className="button secondary" href={`mailto:?subject=${quoteSubject}&body=${quoteBody}`}>
+                Start quote
+              </a>
+            </div>
+
+            <div className="highlight-row" aria-label="Highlights">
+              {highlights.map((item) => (
+                <span className="highlight-pill" key={item}>
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <div className="stats">
-            <div>
-              <strong>2</strong>
-              <span>signature rides</span>
+          <div className="hero-scene" aria-hidden="true">
+            <div className="orbit orbit-one" />
+            <div className="orbit orbit-two" />
+            <div className="scene-surface">
+              <div className="scene-topline">
+                <span className="scene-live">Live route</span>
+                <span>{activeRide.accent}</span>
+              </div>
+              <div className="scene-route">
+                <span>DENVER</span>
+                <span>+</span>
+                <span>RED ROCKS</span>
+              </div>
+              <div className="scene-card">
+                <p>{activeRide.name}</p>
+                <strong>{activeRide.badge}</strong>
+                <span>{activeRide.route}</span>
+              </div>
             </div>
-            <div>
-              <strong>1</strong>
-              <span>simple quote flow</span>
-            </div>
-            <div>
-              <strong>0</strong>
-              <span>desktop clutter for now</span>
-            </div>
+          </div>
+
+          <div className="metrics-grid" aria-label="Quick facts">
+            {metrics.map((metric) => (
+              <div className="metric-card" key={metric.label}>
+                <strong>{metric.value}</strong>
+                <span>{metric.label}</span>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -84,7 +115,7 @@ export default function App() {
         <section className="section" id="rides">
           <div className="section-head">
             <p className="section-label">Choose your ride</p>
-            <h2>The two offers are now obvious instead of buried.</h2>
+            <h2>Two offers, now presented like hero products instead of admin items.</h2>
           </div>
 
           <div className="ride-list">
@@ -94,7 +125,10 @@ export default function App() {
               return (
                 <article className={`ride-card ${isActive ? 'is-active' : ''}`} key={ride.id}>
                   <button className="ride-select" onClick={() => setSelectedRide(ride.id)} type="button">
-                    <span className="ride-badge">{ride.badge}</span>
+                    <div className="ride-head">
+                      <span className="ride-badge">{ride.badge}</span>
+                      <span className="ride-accent">{ride.accent}</span>
+                    </div>
                     <h3>{ride.name}</h3>
                     <p>{ride.blurb}</p>
                     <ul>
@@ -113,10 +147,10 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section">
+        <section className="section split-section">
           <div className="section-head">
             <p className="section-label">How it works</p>
-            <h2>Three taps, one clean path to a booking.</h2>
+            <h2>Three taps, no drama.</h2>
           </div>
 
           <div className="step-list">
@@ -130,10 +164,15 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section" id="quote">
-          <div className="section-head">
-            <p className="section-label">Request a quote</p>
-            <h2>Keep it short and let the form do the work.</h2>
+        <section className="section quote-section" id="quote">
+          <div className="quote-banner">
+            <div>
+              <p className="section-label">Request a quote</p>
+              <h2>Short form. Strong outcome.</h2>
+            </div>
+            <p>
+              This block is intentionally punchy: enough to sell the trip, not enough to bore people to death.
+            </p>
           </div>
 
           <form className="quote-card card">
@@ -174,10 +213,10 @@ export default function App() {
           </form>
         </section>
 
-        <section className="section">
+        <section className="section faq-section">
           <div className="section-head">
             <p className="section-label">Questions people ask</p>
-            <h2>Remove uncertainty before it becomes friction.</h2>
+            <h2>Clear answers sell the trip harder than hype does.</h2>
           </div>
 
           <div className="faq-list">
@@ -193,7 +232,7 @@ export default function App() {
 
       <footer className="footer">
         <p>{activeRide.name}</p>
-        <span>Built for mobile first, desktop later.</span>
+        <span>Built for mobile first, then dressed like a million bucks.</span>
       </footer>
 
       <nav className="sticky-cta" aria-label="Quick actions">

@@ -5,6 +5,7 @@ export const featuredRides = [
     blurb: 'Door-to-door service for concerts, weddings, and group nights that should end with everyone arriving upright.',
     badge: 'Most booked',
     route: 'Denver area to Red Rocks and back',
+    accent: 'Sunset route',
     details: ['Private charter', 'Group-friendly', 'Easy quote'],
   },
   {
@@ -13,6 +14,7 @@ export const featuredRides = [
     blurb: 'A flexible ride for brewery loops, birthday chaos, and anywhere the night gets better after the first stop.',
     badge: 'Best for groups',
     route: 'Custom pickup and dropoff',
+    accent: 'Night route',
     details: ['Flexible timing', 'Local routes', 'Custom itinerary'],
   },
 ] as const;
@@ -36,6 +38,18 @@ export const steps = [
     title: 'Get moving',
     text: 'Confirm the trip and keep the whole crew on the same page from the start.',
   },
+] as const;
+
+export const highlights = [
+  'Premium charter vibes',
+  'Mobile-first booking',
+  'Big type. Bigger attitude.',
+] as const;
+
+export const metrics = [
+  { label: 'signature rides', value: '02' },
+  { label: 'simple request flow', value: '01' },
+  { label: 'desktop clutter', value: '0' },
 ] as const;
 
 export const faqs = [
