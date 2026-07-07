@@ -1,35 +1,130 @@
-import { useMemo, useState } from 'react';
+import { type CSSProperties, type FormEvent, type ImgHTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  BusFront,
+  CircleCheck,
+  Mountain,
+  Route,
+  Send,
+  ShieldCheck,
+  type LucideIcon,
+} from 'lucide-react';
 import {
   faqs,
   featuredRides,
   heroImages,
-  highlights,
-  metrics,
   originalShots,
   pageBackdrop,
   steps,
-  trustPoints,
 } from './content';
 
 type RideId = (typeof featuredRides)[number]['id'];
+type SelectedRideId = RideId | '';
+type BookingStep = 'details' | 'seats' | 'summary';
+type SeatStatus = 'available' | 'unavailable';
+type Seat = {
+  id: string;
+  label: string;
+  status: SeatStatus;
+  x: number;
+  y: number;
+};
+type QuoteStatus = {
+  kind: 'hint' | 'success';
+  message: string;
+};
 
-const initialRide = featuredRides[0].id;
+const quoteEmail = 'wagoncharters@gmail.com';
+const revealDelay = (index: number): CSSProperties => ({ '--reveal-delay': `${index * 70}ms` } as CSSProperties);
+const stepIcons = [Route, Send, BusFront] as const;
+const trustProofs: { text: string; Icon: LucideIcon }[] = [
+  { text: 'The actual bus, shot on location.', Icon: BusFront },
+  { text: 'Red Rocks, bar crawls, private shuttles.', Icon: Mountain },
+  { text: 'Send the details. Get a direct reply.', Icon: ShieldCheck },
+];
+const redRocksSeats: Seat[] = [
+  { id: 'L1', label: 'L1', status: 'available', x: 14, y: 20 },
+  { id: 'L2', label: 'L2', status: 'available', x: 14, y: 31 },
+  { id: 'L3', label: 'L3', status: 'unavailable', x: 14, y: 42 },
+  { id: 'L4', label: 'L4', status: 'available', x: 14, y: 53 },
+  { id: 'R1', label: 'R1', status: 'available', x: 86, y: 20 },
+  { id: 'R2', label: 'R2', status: 'available', x: 86, y: 31 },
+  { id: 'R3', label: 'R3', status: 'available', x: 86, y: 42 },
+  { id: 'R4', label: 'R4', status: 'unavailable', x: 86, y: 53 },
+  { id: 'R5', label: 'R5', status: 'available', x: 86, y: 64 },
+  { id: 'R6', label: 'R6', status: 'available', x: 86, y: 75 },
+  { id: 'R7', label: 'R7', status: 'available', x: 86, y: 86 },
+  { id: 'B1', label: 'B1', status: 'available', x: 21, y: 91 },
+  { id: 'B2', label: 'B2', status: 'available', x: 34, y: 91 },
+  { id: 'B3', label: 'B3', status: 'available', x: 47, y: 91 },
+  { id: 'B4', label: 'B4', status: 'unavailable', x: 60, y: 91 },
+  { id: 'B5', label: 'B5', status: 'available', x: 73, y: 91 },
+];
+
+function PolishedImage({ className = '', decoding, loading, onLoad, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const resolvedDecoding = decoding ?? (loading === 'lazy' ? 'async' : undefined);
+
+  useEffect(() => {
+    const image = imageRef.current;
+
+    if (image?.complete && image.naturalWidth > 0) {
+      setIsLoaded(true);
+      image.parentElement?.classList.add('has-loaded-image');
+    }
+  }, []);
+
+  return (
+    <img
+      {...props}
+      ref={imageRef}
+      decoding={resolvedDecoding}
+      loading={loading}
+      className={`image-fade ${isLoaded ? 'is-loaded' : ''} ${className}`.trim()}
+      onLoad={(event) => {
+        setIsLoaded(true);
+        event.currentTarget.parentElement?.classList.add('has-loaded-image');
+        onLoad?.(event);
+      }}
+    />
+  );
+}
 
 export default function App() {
-  const [selectedRide, setSelectedRide] = useState<RideId>(initialRide);
+  const [selectedRide, setSelectedRide] = useState<SelectedRideId>('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerContact, setCustomerContact] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
   const [groupSize, setGroupSize] = useState('');
   const [pickup, setPickup] = useState('');
+  const [quoteStatus, setQuoteStatus] = useState<QuoteStatus | null>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+  const [bookingStep, setBookingStep] = useState<BookingStep>('details');
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const rideDetailRef = useRef<HTMLElement>(null);
+  const quoteRef = useRef<HTMLElement>(null);
 
   const activeRide = useMemo(
-    () => featuredRides.find((ride) => ride.id === selectedRide) ?? featuredRides[0],
+    () => featuredRides.find((ride) => ride.id === selectedRide) ?? null,
     [selectedRide],
   );
+  const minQuoteDate = useMemo(() => {
+    const today = new Date();
+    const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60_000);
 
-  const quoteSubject = encodeURIComponent(`Quote request: ${activeRide.name}`);
+    return localToday.toISOString().slice(0, 10);
+  }, []);
+
+  const canSubmitQuote = Boolean(
+    activeRide && customerName.trim() && customerContact.trim() && preferredDate.trim() && groupSize.trim() && pickup.trim(),
+  );
+
+  const quoteSubject = encodeURIComponent(`Quote request: ${activeRide?.name ?? 'Wagon Charters'}`);
   const quoteBody = encodeURIComponent(
     [
-      `Ride: ${activeRide.name}`,
+      `Ride: ${activeRide?.name ?? 'Not selected'}`,
+      customerName ? `Name: ${customerName}` : 'Name: ',
+      customerContact ? `Contact: ${customerContact}` : 'Contact: ',
       preferredDate ? `Date: ${preferredDate}` : 'Date: ',
       groupSize ? `Group size: ${groupSize}` : 'Group size: ',
       pickup ? `Pickup: ${pickup}` : 'Pickup: ',
@@ -37,30 +132,199 @@ export default function App() {
       'Tell me what you need and I will handle the rest.',
     ].join('\n'),
   );
+  const quoteMailto = `mailto:${quoteEmail}?subject=${quoteSubject}&body=${quoteBody}`;
+  const selectedSeatLabels = redRocksSeats
+    .filter((seat) => selectedSeats.includes(seat.id))
+    .map((seat) => seat.label);
+  const estimatedSeatDeposit = selectedSeats.length * 25;
+
+  function scrollToElement(element: HTMLElement | null, block: ScrollLogicalPosition = 'start') {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        element?.scrollIntoView({ behavior: 'smooth', block });
+      });
+    });
+  }
+
+  function scrollToSelector(selector: string, block: ScrollLogicalPosition = 'start') {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>(selector)?.scrollIntoView({ behavior: 'smooth', block });
+      });
+    });
+  }
+
+  function openRideDetails(rideId: RideId) {
+    setSelectedRide(rideId);
+    setBookingStep('details');
+    if (rideId !== 'red-rocks') {
+      setSelectedSeats([]);
+    }
+    setQuoteStatus(null);
+    scrollToSelector('#ride-detail');
+  }
+
+  function returnToRideChoices() {
+    setSelectedRide('');
+    setBookingStep('details');
+    setSelectedSeats([]);
+    setQuoteStatus(null);
+    scrollToSelector('.ride-list');
+  }
+
+  function startRideQuote(rideId: RideId) {
+    setSelectedRide(rideId);
+    setQuoteStatus(null);
+    scrollToElement(quoteRef.current);
+  }
+
+  function startSeatSelection() {
+    setBookingStep('seats');
+    setQuoteStatus(null);
+    scrollToSelector('#ride-detail');
+  }
+
+  function toggleSeat(seat: Seat) {
+    if (seat.status === 'unavailable') {
+      return;
+    }
+
+    setSelectedSeats((currentSeats) =>
+      currentSeats.includes(seat.id)
+        ? currentSeats.filter((seatId) => seatId !== seat.id)
+        : [...currentSeats, seat.id],
+    );
+  }
+
+  function confirmSeats() {
+    if (!selectedSeats.length) {
+      return;
+    }
+
+    setBookingStep('summary');
+    scrollToSelector('#ride-detail');
+  }
+
+  useEffect(() => {
+    const motionRoot = document.documentElement;
+    const pageFrame = document.querySelector('.page-frame');
+    const revealItems = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!revealItems.length || prefersReducedMotion || !('IntersectionObserver' in window)) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+
+    motionRoot.classList.add('motion-ready');
+    pageFrame?.classList.add('motion-ready');
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.12 },
+    );
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+
+    return () => {
+      revealObserver.disconnect();
+      motionRoot.classList.remove('motion-ready');
+      pageFrame?.classList.remove('motion-ready');
+    };
+  }, []);
+
+  useEffect(() => {
+    const hero = document.querySelector<HTMLElement>('.hero');
+    const quote = document.querySelector<HTMLElement>('#quote');
+
+    if (!hero) {
+      return;
+    }
+
+    const updateStickyCta = () => {
+      const rideDetail = document.querySelector<HTMLElement>('#ride-detail');
+      const rideDetailRect = rideDetail?.getBoundingClientRect();
+      const ridePicker = document.querySelector<HTMLElement>('#rides');
+      const ridePickerRect = ridePicker?.getBoundingClientRect();
+      const isReadingRideDetail = Boolean(
+        rideDetailRect && rideDetailRect.top < window.innerHeight * 0.94 && rideDetailRect.bottom > 0,
+      );
+      const isUsingRidePicker = Boolean(
+        ridePickerRect && ridePickerRect.top < window.innerHeight * 0.72 && ridePickerRect.bottom > window.innerHeight * 0.18,
+      );
+      const heroBottom = hero.offsetTop + hero.offsetHeight - 24;
+      const quoteTop = quote ? quote.offsetTop - window.innerHeight * 0.24 : Number.POSITIVE_INFINITY;
+      const scrollPosition = window.scrollY;
+
+      setShowStickyCta(scrollPosition > heroBottom && scrollPosition < quoteTop && !isReadingRideDetail && !isUsingRidePicker);
+    };
+
+    updateStickyCta();
+    window.addEventListener('scroll', updateStickyCta, { passive: true });
+    window.addEventListener('resize', updateStickyCta);
+
+    return () => {
+      window.removeEventListener('scroll', updateStickyCta);
+      window.removeEventListener('resize', updateStickyCta);
+    };
+  }, [selectedRide]);
+
+  useEffect(() => {
+    if (selectedRide) {
+      scrollToElement(rideDetailRef.current);
+    }
+  }, [bookingStep, selectedRide]);
+
+  function handleQuoteSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!canSubmitQuote) {
+      setQuoteStatus({
+        kind: 'hint',
+        message: 'Choose a ride and add your contact details, date, group size, and pickup spot.',
+      });
+      return;
+    }
+
+    setQuoteStatus({
+      kind: 'success',
+      message: 'You are all set - your email draft is open. Just hit send.',
+    });
+    window.location.href = quoteMailto;
+  }
 
   return (
     <div className="page-frame" style={{ backgroundImage: `url(${pageBackdrop})` }}>
       <div className="page-shell">
-      <header className="topbar">
+        <header className="topbar reveal">
         <div className="brand-lockup">
-          <span className="brand-mark" aria-hidden="true">
-            WC
-          </span>
-          <div>
+          <img className="brand-mark" src="images/wagon-charters-logo-real.png" alt="" aria-hidden="true" />
+          <div className="brand-wordmark">
             <p className="eyebrow">Wagon Charters</p>
-            <p className="topline">Denver charter rides for late nights and loud groups</p>
           </div>
         </div>
         <a className="ghost-link" href="#quote">
-          Get a quote
+          GET A QUOTE
         </a>
-      </header>
+        </header>
 
-      <main>
-        <section className="hero">
+        <main>
+        <section className="hero reveal" aria-labelledby="hero-title">
           <div className="hero-media">
             <figure className="hero-photo hero-photo-large">
-              <img src={heroImages[0].src} alt={heroImages[0].alt} loading="eager" />
+              <PolishedImage
+                src={heroImages[0].src}
+                alt={heroImages[0].alt}
+                loading="eager"
+                fetchPriority="high"
+              />
               <figcaption>
                 <span>Denver / Red Rocks / private charter</span>
               </figcaption>
@@ -68,59 +332,34 @@ export default function App() {
           </div>
 
           <div className="hero-copy-wrap">
-            <p className="hero-kicker">Red Rocks. Breweries. Ski-town weekends.</p>
-            <h1>Private rides for loud groups and late nights.</h1>
-            <p className="hero-copy">
-              Real photography, cleaner booking, and a tone that feels like the kind of place your friends would
-              actually book.
-            </p>
+            <p className="hero-kicker">Red Rocks. Bar crawls. Breweries. Mountain shuttles.</p>
+            <h1 id="hero-title">Private rides for loud groups and late nights.</h1>
 
             <div className="hero-actions">
-              <a className="button primary" href="#rides">
-                Explore rides
+              <a className="button primary" href="#quote">
+                Get a quote
               </a>
-              <a className="button secondary" href={`mailto:?subject=${quoteSubject}&body=${quoteBody}`}>
-                Start quote
+              <a className="button secondary" href="#rides">
+                View rides
               </a>
             </div>
-
-            <div className="highlight-row" aria-label="Highlights">
-              {highlights.map((item) => (
-                <span className="highlight-pill" key={item}>
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="metrics-grid" aria-label="Quick facts">
-            {metrics.map((metric) => (
-              <div className="metric-card" key={metric.label}>
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
-              </div>
-            ))}
+            <a className="hero-scroll-cue" href="#meet-wagon">
+              <span aria-hidden="true" />
+              More below
+            </a>
           </div>
         </section>
 
-        <section className="trust-strip">
-          {trustPoints.map((point) => (
-            <div className="trust-chip" key={point}>
-              {point}
-            </div>
-          ))}
-        </section>
-
-        <section className="section original-shots">
+        <section className="section original-shots reveal" id="meet-wagon" aria-labelledby="meet-wagon-title">
           <div className="section-head">
-            <p className="section-label">Original site shots</p>
-            <h2>Same brand, but now the page has a real photo story instead of one image doing all the work.</h2>
+            <p className="section-label">Meet the Wagon</p>
+            <h2 id="meet-wagon-title">Ride Colorado's Iconic Red Charter Bus</h2>
           </div>
 
           <div className="shot-grid">
-            {originalShots.map((shot) => (
-              <figure className="shot-card" key={shot.title}>
-                <img src={shot.src} alt={shot.alt} loading="lazy" />
+            {originalShots.map((shot, index) => (
+              <figure className="shot-card reveal" key={shot.title} style={revealDelay(index + 1)}>
+                <PolishedImage src={shot.src} alt={shot.alt} loading="lazy" />
                 <figcaption>
                   <span>{shot.caption}</span>
                   <strong>{shot.title}</strong>
@@ -130,76 +369,314 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section" id="rides">
+        <section className="section reveal" id="rides" aria-labelledby="rides-title">
           <div className="section-head">
-            <p className="section-label">Choose your ride</p>
-            <h2>Two trip types, both built to look good on a phone.</h2>
+            <p className="section-label" id="rides-title">Choose your ride</p>
           </div>
 
           <div className="ride-list">
-            {featuredRides.map((ride) => {
+            {featuredRides.map((ride, index) => {
               const isActive = ride.id === selectedRide;
 
               return (
-                <article className={`ride-card ${isActive ? 'is-active' : ''}`} key={ride.id}>
-                  <button className="ride-select" onClick={() => setSelectedRide(ride.id)} type="button">
+                <article
+                  className={`ride-card ${isActive ? 'is-active' : ''}`}
+                  key={ride.id}
+                >
+                  <button
+                    aria-label={`View ${ride.name} details`}
+                    aria-pressed={isActive}
+                    className="ride-select"
+                    onClick={() => openRideDetails(ride.id)}
+                    type="button"
+                  >
                     <figure className="ride-photo">
-                      <img src={ride.image} alt={ride.imageAlt} loading="lazy" />
+                      <PolishedImage src={ride.image} alt={ride.imageAlt} loading="lazy" />
+                      {isActive ? (
+                        <span className="ride-check-badge" aria-hidden="true">
+                          <CircleCheck strokeWidth={2.25} />
+                        </span>
+                      ) : null}
                     </figure>
                     <div className="ride-head">
                       <span className="ride-badge">{ride.badge}</span>
                       <span className="ride-accent">{ride.accent}</span>
                     </div>
                     <h3>{ride.name}</h3>
-                    <p>{ride.blurb}</p>
-                    <ul>
-                      {ride.details.map((detail) => (
-                        <li key={detail}>{detail}</li>
-                      ))}
-                    </ul>
                     <div className="ride-footer">
                       <span>{ride.route}</span>
-                      <span>{isActive ? 'Selected' : 'Tap to select'}</span>
+                      <span className="ride-status">
+                        {isActive ? <CircleCheck aria-hidden="true" strokeWidth={2.25} /> : null}
+                        {isActive ? 'Viewing details' : 'View details'}
+                      </span>
                     </div>
                   </button>
                 </article>
               );
             })}
           </div>
+
+          {activeRide ? (
+            <article
+              className="ride-detail card reveal is-visible"
+              id="ride-detail"
+              ref={rideDetailRef}
+              aria-live="polite"
+              aria-labelledby="ride-detail-title"
+            >
+              <div className="ride-detail-topline">
+                <button className="ride-back-button" onClick={returnToRideChoices} type="button">
+                  Back to rides
+                </button>
+                <span>
+                  {bookingStep === 'details' ? 'Ride details' : bookingStep === 'seats' ? 'Select seats' : 'Trip summary'}
+                </span>
+              </div>
+              {activeRide.id === 'red-rocks' ? (
+                <ol className="ride-flow-steps" aria-label="Red Rocks Special booking steps">
+                  {['Details', 'Seats', 'Summary'].map((step, index) => {
+                    const isComplete =
+                      (bookingStep === 'seats' && index === 0) || (bookingStep === 'summary' && index < 2);
+                    const isCurrent =
+                      (bookingStep === 'details' && index === 0) ||
+                      (bookingStep === 'seats' && index === 1) ||
+                      (bookingStep === 'summary' && index === 2);
+
+                    return (
+                      <li className={`${isCurrent ? 'is-current' : ''} ${isComplete ? 'is-complete' : ''}`.trim()} key={step}>
+                        <span>{index + 1}</span>
+                        {step}
+                      </li>
+                    );
+                  })}
+                </ol>
+              ) : null}
+
+              {bookingStep === 'details' ? (
+                <>
+                  <div className="ride-detail-copy">
+                    <span className="ride-detail-label">{activeRide.name}</span>
+                    <h2 id="ride-detail-title">{activeRide.detailTitle}</h2>
+                    <p>{activeRide.detailCopy}</p>
+                    <div className={`ride-detail-actions ${activeRide.id === 'red-rocks' ? 'has-seat-action' : ''}`}>
+                      {activeRide.id === 'red-rocks' ? (
+                        <button className="button primary" onClick={startSeatSelection} type="button">
+                          Select seats
+                        </button>
+                      ) : null}
+                      <button
+                        className={`button ${activeRide.id === 'red-rocks' ? 'secondary' : 'primary'}`}
+                        onClick={() => startRideQuote(activeRide.id)}
+                        type="button"
+                      >
+                        Get quote
+                      </button>
+                      <span>{activeRide.route}</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`ride-detail-gallery ${
+                      activeRide.detailImages.some((image) => 'variant' in image && image.variant === 'wide')
+                        ? 'has-wide-shot'
+                        : ''
+                    }`.trim()}
+                    aria-label={`${activeRide.name} photos`}
+                  >
+                    {activeRide.detailImages.map((image) => (
+                      <figure
+                        className={`ride-detail-shot ${'variant' in image ? `is-${image.variant}` : ''}`.trim()}
+                        key={image.src}
+                      >
+                        <PolishedImage src={image.src} alt={image.alt} loading="lazy" />
+                        <figcaption>{image.label}</figcaption>
+                      </figure>
+                    ))}
+                  </div>
+
+                  <ul className="ride-detail-highlights" aria-label={`${activeRide.name} highlights`}>
+                    {activeRide.highlights.map((highlight) => (
+                      <li key={highlight}>
+                        <CircleCheck aria-hidden="true" strokeWidth={2} />
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
+              {activeRide.id === 'red-rocks' && bookingStep === 'seats' ? (
+                <div className="seat-selection-panel">
+                  <div className="seat-panel-head">
+                    <span className="ride-detail-label">Red Rocks Special</span>
+                    <h2 id="ride-detail-title">Pick your Red Rocks seats.</h2>
+                  </div>
+
+                  <div className="seat-map-shell" aria-label="Red Rocks Special seat map">
+                    <div className="seat-map-label is-front">Front / driver</div>
+                    <div className="bar-zone">Bar</div>
+                    <div className="table-zone">Standing table</div>
+                    <div className="aisle-zone">Walkway</div>
+                    {redRocksSeats.map((seat) => {
+                      const isSelected = selectedSeats.includes(seat.id);
+                      const seatStyle = {
+                        '--seat-x': `${seat.x}%`,
+                        '--seat-y': `${seat.y}%`,
+                      } as CSSProperties & Record<'--seat-x' | '--seat-y', string>;
+
+                      return (
+                        <button
+                          aria-label={`${seat.label} ${seat.status === 'unavailable' ? 'unavailable' : isSelected ? 'selected' : 'available'}`}
+                          aria-pressed={isSelected}
+                          className={`seat-button ${isSelected ? 'is-selected' : ''} ${
+                            seat.status === 'unavailable' ? 'is-unavailable' : ''
+                          }`.trim()}
+                          disabled={seat.status === 'unavailable'}
+                          key={seat.id}
+                          onClick={() => toggleSeat(seat)}
+                          style={seatStyle}
+                          type="button"
+                        >
+                          {seat.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="seat-legend" aria-label="Seat map legend">
+                    <span><i className="is-available" />Available</span>
+                    <span><i className="is-selected" />Selected</span>
+                    <span><i className="is-unavailable" />Unavailable</span>
+                  </div>
+
+                  <div className="seat-selection-footer">
+                    <p>
+                      {selectedSeats.length
+                        ? `${selectedSeats.length} selected: ${selectedSeatLabels.join(', ')}`
+                        : 'Select at least one seat to continue.'}
+                    </p>
+                    <div className="seat-actions">
+                      <button className="button secondary" onClick={() => setBookingStep('details')} type="button">
+                        Back
+                      </button>
+                      <button className="button primary" disabled={!selectedSeats.length} onClick={confirmSeats} type="button">
+                        Confirm seats
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {activeRide.id === 'red-rocks' && bookingStep === 'summary' ? (
+                <div className="trip-summary-panel">
+                  <div className="seat-panel-head">
+                    <span className="ride-detail-label">Payment preview</span>
+                    <h2 id="ride-detail-title">Review your Red Rocks seats.</h2>
+                    <p>This shows the checkout step that will connect to payment later.</p>
+                  </div>
+
+                  <div className="summary-grid">
+                    <div>
+                      <span>Ride</span>
+                      <strong>Red Rocks Special</strong>
+                    </div>
+                    <div>
+                      <span>Seat numbers</span>
+                      <strong>{selectedSeatLabels.join(', ')}</strong>
+                    </div>
+                    <div>
+                      <span>Seats selected</span>
+                      <strong>{selectedSeats.length}</strong>
+                    </div>
+                    <div>
+                      <span>Deposit preview</span>
+                      <strong>${estimatedSeatDeposit}</strong>
+                    </div>
+                  </div>
+
+                  <div className="payment-preview-card">
+                    <span>Payment</span>
+                    <strong>Card checkout placeholder</strong>
+                    <p>Payment is not connected yet, but this is where the deposit flow will live.</p>
+                  </div>
+
+                  <div className="seat-actions">
+                    <button className="button secondary" onClick={() => setBookingStep('seats')} type="button">
+                      Edit seats
+                    </button>
+                    <button className="button primary" onClick={() => startRideQuote('red-rocks')} type="button">
+                      Request this setup
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </article>
+          ) : (
+            <div className="ride-empty-state reveal is-visible">
+              <p>Choose a ride to view photos, details, and next steps.</p>
+            </div>
+          )}
         </section>
 
-        <section className="section split-section">
+        <section className="section split-section reveal" id="how-it-works" aria-labelledby="how-it-works-title">
           <div className="section-head">
             <p className="section-label">How it works</p>
-            <h2>Three taps. No bullshit.</h2>
+            <h2 id="how-it-works-title">Three simple steps to get your group moving.</h2>
           </div>
 
           <div className="step-list">
-            {steps.map((step, index) => (
-              <article className="step-card" key={step.title}>
-                <span className="step-index">0{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </article>
+            {steps.map((step, index) => {
+              const StepIcon = stepIcons[index] ?? CircleCheck;
+
+              return (
+                <article className="step-card reveal" key={step.title} style={revealDelay(index + 1)}>
+                  <div className="step-card-top">
+                    <span className="step-index">0{index + 1}</span>
+                    <span className="step-icon-shell">
+                      <StepIcon aria-hidden="true" className="step-icon" strokeWidth={1.8} />
+                    </span>
+                  </div>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="section trust-section reveal" aria-label="Wagon Charters trust highlights">
+          <div className="trust-proof">
+            {trustProofs.map(({ text, Icon }) => (
+              <span key={text}>
+                <Icon aria-hidden="true" strokeWidth={1.8} />
+                {text}
+              </span>
             ))}
           </div>
         </section>
 
-        <section className="section quote-section" id="quote">
+        <section className="section quote-section reveal" id="quote" ref={quoteRef} aria-labelledby="quote-title">
           <div className="quote-banner">
             <div>
               <p className="section-label">Request a quote</p>
-              <h2>Short form. Fast answer.</h2>
+              <h2 id="quote-title">Short form. Fast answer.</h2>
             </div>
             <p>
-              Send the details and get a straight answer without the usual booking nonsense.
+              Send the details and get a clear answer for your date, pickup, and group size.
             </p>
           </div>
 
-          <form className="quote-card card">
-            <label>
+          <form aria-label="Quote request details" className="quote-card card" onSubmit={handleQuoteSubmit}>
+            <label htmlFor="quote-ride">
               Ride
-              <select value={selectedRide} onChange={(event) => setSelectedRide(event.target.value as RideId)}>
+              <select
+                id="quote-ride"
+                name="ride"
+                value={selectedRide}
+                required
+                onChange={(event) => setSelectedRide(event.target.value as SelectedRideId)}
+              >
+                <option value="">Choose a ride</option>
                 {featuredRides.map((ride) => (
                   <option key={ride.id} value={ride.id}>
                     {ride.name}
@@ -208,62 +685,136 @@ export default function App() {
               </select>
             </label>
 
-            <label>
+            <label htmlFor="quote-name">
+              Your name
+              <input
+                autoComplete="name"
+                id="quote-name"
+                name="name"
+                required
+                value={customerName}
+                onChange={(event) => setCustomerName(event.target.value)}
+                placeholder="Name"
+              />
+            </label>
+
+            <label htmlFor="quote-contact">
+              Email or phone
+              <input
+                autoComplete="email"
+                id="quote-contact"
+                name="contact"
+                required
+                value={customerContact}
+                onChange={(event) => setCustomerContact(event.target.value)}
+                placeholder="you@example.com or phone"
+              />
+            </label>
+
+            <label htmlFor="quote-date">
               Date
-              <input value={preferredDate} onChange={(event) => setPreferredDate(event.target.value)} placeholder="Friday, Aug 16" />
+              <input
+                id="quote-date"
+                name="preferred-date"
+                required
+                type="date"
+                min={minQuoteDate}
+                value={preferredDate}
+                onChange={(event) => setPreferredDate(event.target.value)}
+              />
             </label>
 
-            <label>
+            <label htmlFor="quote-group-size">
               Group size
-              <input value={groupSize} onChange={(event) => setGroupSize(event.target.value)} placeholder="12 people" />
+              <input
+                id="quote-group-size"
+                inputMode="numeric"
+                max="60"
+                min="1"
+                name="group-size"
+                required
+                type="number"
+                value={groupSize}
+                onChange={(event) => setGroupSize(event.target.value)}
+                placeholder="12"
+              />
             </label>
 
-            <label>
+            <label htmlFor="quote-pickup">
               Pickup spot
-              <input value={pickup} onChange={(event) => setPickup(event.target.value)} placeholder="Denver or nearby" />
+              <input
+                autoComplete="street-address"
+                id="quote-pickup"
+                name="pickup"
+                required
+                value={pickup}
+                onChange={(event) => setPickup(event.target.value)}
+                placeholder="Denver or nearby"
+              />
             </label>
+
+            <p className="quote-note">
+              Opens a pre-addressed draft in your email app. Just hit send.
+            </p>
+            {quoteStatus ? (
+              <p className={`quote-status is-${quoteStatus.kind}`} aria-live="polite">
+                {quoteStatus.kind === 'success' ? <CircleCheck aria-hidden="true" strokeWidth={2.35} /> : null}
+                <span>{quoteStatus.message}</span>
+              </p>
+            ) : null}
 
             <div className="quote-actions">
-              <a className="button primary" href={`mailto:?subject=${quoteSubject}&body=${quoteBody}`}>
-                Email quote details
-              </a>
-              <a className="button secondary" href={`sms:?body=${quoteBody}`}>
-                Text the request
-              </a>
+              <button className="button primary" disabled={!canSubmitQuote} type="submit">
+                Get my quote
+              </button>
             </div>
+            <p className="quote-reassurance">Free quote · Denver groups · No spam.</p>
           </form>
         </section>
 
-        <section className="section faq-section">
+        <section className="section faq-section reveal" id="faq" aria-labelledby="faq-title">
           <div className="section-head">
             <p className="section-label">Questions people ask</p>
-            <h2>Quick answers, because nobody wants a scavenger hunt.</h2>
+            <h2 id="faq-title">Quick answers before you book.</h2>
           </div>
 
           <div className="faq-list">
-            {faqs.map((faq) => (
-              <details className="faq-card" key={faq.question}>
+            {faqs.map((faq, index) => (
+              <details className="faq-card reveal" key={faq.question} style={revealDelay(index + 1)}>
                 <summary>{faq.question}</summary>
                 <p>{faq.answer}</p>
               </details>
             ))}
           </div>
         </section>
-      </main>
+        </main>
 
-      <footer className="footer">
-        <p>{activeRide.name}</p>
-        <span>Built for mobile first, with actual taste.</span>
-      </footer>
+        <footer className="footer">
+          <div className="footer-brand">
+            <p>Wagon Charters</p>
+            <span>Denver rides for Red Rocks and bar crawls.</span>
+          </div>
+          <nav className="footer-links" aria-label="Footer links">
+            <a href="#rides">Rides</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#faq">FAQ</a>
+            <a href="#quote">Get a quote</a>
+          </nav>
+          <a className="footer-contact" href={`mailto:${quoteEmail}`}>
+            Email Wagon Charters
+          </a>
+        </footer>
 
-      <nav className="sticky-cta" aria-label="Quick actions">
-        <a className="button primary" href="#quote">
-          Quote
-        </a>
-        <a className="button secondary" href="#rides">
-          Rides
-        </a>
-      </nav>
+        <nav
+          aria-hidden={!showStickyCta}
+          aria-label="Quick actions"
+          className={`sticky-cta ${showStickyCta ? 'is-visible' : ''}`}
+        >
+          <span className="sticky-note">Free quote for Denver groups</span>
+          <a className="button primary" href="#quote" tabIndex={showStickyCta ? undefined : -1}>
+            GET A QUOTE
+          </a>
+        </nav>
       </div>
     </div>
   );
