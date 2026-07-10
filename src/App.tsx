@@ -41,6 +41,31 @@ const trustProofs: { text: string; Icon: LucideIcon }[] = [
   { text: 'Red Rocks, bar crawls, private shuttles.', Icon: Mountain },
   { text: 'Send the details. Get a direct reply.', Icon: ShieldCheck },
 ];
+const heroProofs = [
+  { label: 'Pickup', value: 'Custom stop' },
+  { label: 'Route', value: 'Colorado nights' },
+  { label: 'Reply', value: 'Direct quote' },
+] as const;
+const routeManifest: { eyebrow: string; title: string; text: string; Icon: LucideIcon }[] = [
+  {
+    eyebrow: 'Show run',
+    title: 'Red Rocks without the parking scramble',
+    text: 'Keep the group together from pickup through the encore.',
+    Icon: Mountain,
+  },
+  {
+    eyebrow: 'Night loop',
+    title: 'Bars, breweries, birthdays, and late stops',
+    text: 'Build the route around your crew instead of splitting cars.',
+    Icon: Route,
+  },
+  {
+    eyebrow: 'Private charter',
+    title: 'One bus, one plan, one direct reply',
+    text: 'Send the date, headcount, and pickup. Get the next step fast.',
+    Icon: ShieldCheck,
+  },
+] as const;
 const redRocksSeats: Seat[] = [
   { id: 'L1', label: 'L1', status: 'available', x: 14, y: 20 },
   { id: 'L2', label: 'L2', status: 'available', x: 14, y: 31 },
@@ -118,6 +143,11 @@ export default function App() {
   const canSubmitQuote = Boolean(
     activeRide && customerName.trim() && customerContact.trim() && preferredDate.trim() && groupSize.trim() && pickup.trim(),
   );
+  const selectedSeatLabels = redRocksSeats
+    .filter((seat) => selectedSeats.includes(seat.id))
+    .map((seat) => seat.label);
+  const estimatedSeatDeposit = selectedSeats.length * 25;
+  const hasSelectedRedRocksSeats = selectedRide === 'red-rocks' && selectedSeats.length > 0;
 
   const quoteSubject = encodeURIComponent(`Quote request: ${activeRide?.name ?? 'Wagon Charters'}`);
   const quoteBody = encodeURIComponent(
@@ -128,15 +158,13 @@ export default function App() {
       preferredDate ? `Date: ${preferredDate}` : 'Date: ',
       groupSize ? `Group size: ${groupSize}` : 'Group size: ',
       pickup ? `Pickup: ${pickup}` : 'Pickup: ',
+      hasSelectedRedRocksSeats ? `Selected seats: ${selectedSeatLabels.join(', ')}` : null,
+      hasSelectedRedRocksSeats ? `Deposit preview: $${estimatedSeatDeposit}` : null,
       '',
       'Tell me what you need and I will handle the rest.',
-    ].join('\n'),
+    ].filter(Boolean).join('\n'),
   );
   const quoteMailto = `mailto:${quoteEmail}?subject=${quoteSubject}&body=${quoteBody}`;
-  const selectedSeatLabels = redRocksSeats
-    .filter((seat) => selectedSeats.includes(seat.id))
-    .map((seat) => seat.label);
-  const estimatedSeatDeposit = selectedSeats.length * 25;
 
   function scrollToElement(element: HTMLElement | null, block: ScrollLogicalPosition = 'start') {
     window.requestAnimationFrame(() => {
@@ -332,8 +360,27 @@ export default function App() {
           </div>
 
           <div className="hero-copy-wrap">
+            <div className="hero-route-chip" aria-label="Current route">
+              <span>DEN</span>
+              <i aria-hidden="true" />
+              <span>RED ROCKS</span>
+              <i aria-hidden="true" />
+              <span>LATE RETURN</span>
+            </div>
             <p className="hero-kicker">Red Rocks. Bar crawls. Breweries. Mountain shuttles.</p>
             <h1 id="hero-title">Private rides for loud groups and late nights.</h1>
+            <p className="hero-intro">
+              A real Colorado charter bus for concerts, parties, and custom routes around Denver.
+            </p>
+
+            <div className="hero-proof-grid" aria-label="Fast trip details">
+              {heroProofs.map((proof) => (
+                <span key={proof.label}>
+                  <strong>{proof.value}</strong>
+                  {proof.label}
+                </span>
+              ))}
+            </div>
 
             <div className="hero-actions">
               <a className="button primary" href="#quote">
@@ -348,6 +395,21 @@ export default function App() {
               More below
             </a>
           </div>
+        </section>
+
+        <section className="route-manifest reveal" aria-label="Popular Wagon Charters routes">
+          {routeManifest.map(({ eyebrow, title, text, Icon }, index) => (
+            <article className="manifest-card reveal" key={title} style={revealDelay(index + 1)}>
+              <span className="manifest-icon">
+                <Icon aria-hidden="true" strokeWidth={1.8} />
+              </span>
+              <div>
+                <p>{eyebrow}</p>
+                <h2>{title}</h2>
+                <span>{text}</span>
+              </div>
+            </article>
+          ))}
         </section>
 
         <section className="section original-shots reveal" id="meet-wagon" aria-labelledby="meet-wagon-title">
@@ -403,6 +465,12 @@ export default function App() {
                       <span className="ride-accent">{ride.accent}</span>
                     </div>
                     <h3>{ride.name}</h3>
+                    <p className="ride-blurb">{ride.blurb}</p>
+                    <ul className="ride-pills" aria-label={`${ride.name} trip details`}>
+                      {ride.details.map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
                     <div className="ride-footer">
                       <span>{ride.route}</span>
                       <span className="ride-status">
@@ -664,6 +732,11 @@ export default function App() {
             <p>
               Send the details and get a clear answer for your date, pickup, and group size.
             </p>
+            <div className="quote-signal-strip" aria-label="Quote request expectations">
+              <span>No spam</span>
+              <span>Custom route</span>
+              <span>Direct reply</span>
+            </div>
           </div>
 
           <form aria-label="Quote request details" className="quote-card card" onSubmit={handleQuoteSubmit}>
@@ -684,6 +757,14 @@ export default function App() {
                 ))}
               </select>
             </label>
+
+            {hasSelectedRedRocksSeats ? (
+              <div className="quote-seat-summary" aria-label="Selected Red Rocks setup">
+                <span>Selected setup</span>
+                <strong>{selectedSeatLabels.join(', ')}</strong>
+                <p>Deposit preview ${estimatedSeatDeposit}</p>
+              </div>
+            ) : null}
 
             <label htmlFor="quote-name">
               Your name
@@ -756,6 +837,11 @@ export default function App() {
             <p className="quote-note">
               Opens a pre-addressed draft in your email app. Just hit send.
             </p>
+            {!canSubmitQuote ? (
+              <p className="quote-helper">
+                Add ride, name, contact, date, group size, and pickup to enable the quote.
+              </p>
+            ) : null}
             {quoteStatus ? (
               <p className={`quote-status is-${quoteStatus.kind}`} aria-live="polite">
                 {quoteStatus.kind === 'success' ? <CircleCheck aria-hidden="true" strokeWidth={2.35} /> : null}
