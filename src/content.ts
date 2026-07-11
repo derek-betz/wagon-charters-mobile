@@ -2,16 +2,16 @@ export const featuredRides = [
   {
     id: 'red-rocks',
     name: 'Red Rocks Special',
-    blurb: 'Door-to-door runs for concerts, weddings, and everyone who wants to get there together.',
+    blurb: 'A private whole-bus charter that keeps your group together from pickup through the encore.',
     badge: 'Most booked',
     route: 'Denver area to Red Rocks and back',
     accent: 'Sunset route',
     image: 'images/red-rocks-card-mobile.webp',
     imageAlt: 'Red Rocks amphitheater at golden hour',
-    details: ['Private charter', 'Group-friendly', 'Easy quote'],
+    details: ['Private whole bus', 'Up to 33 guests', 'Layout preview'],
     detailTitle: 'Concert nights without the parking scramble.',
     detailCopy:
-      'Reserve your seats on the shared Red Rocks run, keep the crew together, and skip the parking scramble before the opener even starts.',
+      'Reserve the entire bus for your group, set the pickup plan, and skip the parking scramble before the opener even starts.',
     detailImages: [
       {
         src: 'images/red-rocks-venue-mobile.webp',
@@ -24,7 +24,7 @@ export const featuredRides = [
         label: 'The ride',
       },
     ],
-    highlights: ['Shared concert run', 'Seat selection', 'Concert-ready timing'],
+    highlights: ['Private whole-bus booking', 'Handicap accessible', 'Neon lights and sound system'],
   },
   {
     id: 'booze-cruise',
@@ -35,10 +35,10 @@ export const featuredRides = [
     accent: 'Night route',
     image: 'images/booze-card-mobile.webp',
     imageAlt: 'Maroon charter bus at blue hour',
-    details: ['Flexible timing', 'Local routes', 'Custom itinerary'],
+    details: ['Private whole bus', '21+ only', 'Onboard bar included'],
     detailTitle: 'A private bar crawl with the ride built in.',
     detailCopy:
-      'Reserve the whole bus for the evening, set the route, and let the onboard bar and night-lit cabin make the ride part of the party.',
+      'Reserve the whole bus for your 21+ group, set the route, and let the included onboard bar, neon lights, and sound system make the ride part of the party.',
     detailImages: [
       {
         src: 'images/booze-cruise-party-mobile.webp',
@@ -57,14 +57,64 @@ export const featuredRides = [
         label: 'Inside',
       },
     ],
-    highlights: ['Whole-bus private rental', 'Onboard bar setup', 'Custom stops and timing'],
+    highlights: ['Onboard bar included', 'Neon lights and sound system', 'No cigarette smoking'],
+  },
+  {
+    id: 'mountain-shuttle',
+    name: 'Mountain Shuttle',
+    blurb: 'Private transportation for mountain days, group getaways, and custom Colorado pickup and return plans.',
+    badge: 'Colorado day trip',
+    route: 'Denver to your mountain stop',
+    accent: 'Mountain route',
+    image: 'images/mountain-shuttle-i70-ai.webp',
+    imageAlt: 'Red MCI motorcoach traveling on Interstate 70 through Glenwood Canyon',
+    details: ['Private whole bus', 'Up to 57 guests', 'Custom timing'],
+    detailTitle: 'Mountain transportation built around your group.',
+    detailCopy:
+      'Book the entire bus, choose the pickup and mountain destination, and keep everyone on one schedule for the ride out and back.',
+    detailImages: [
+      {
+        src: 'images/mountain-shuttle-i70-ai.webp',
+        alt: 'Red MCI motorcoach traveling on Interstate 70 through Glenwood Canyon',
+        label: 'I-70 mountain route',
+        variant: 'wide',
+      },
+    ],
+    highlights: ['Up to 57 guests', 'Handicap accessible', 'Flexible pickup and return'],
+  },
+  {
+    id: 'mimosa-tour',
+    name: 'Denver Mimosa Tours',
+    blurb: 'A private daytime loop for brunch stops, birthdays, and celebrations around Denver.',
+    badge: 'Daytime favorite',
+    route: 'Custom Denver brunch loop',
+    accent: 'Day route',
+    image: 'images/about-original-mobile.webp',
+    imageAlt: 'Maroon Wagon Charters bus with the crew in Denver',
+    details: ['Private whole bus', 'Custom stops', 'Up to 33 guests'],
+    detailTitle: 'Turn brunch into a private Denver tour.',
+    detailCopy:
+      'Choose the brunch stops, gather the group, and keep the celebration moving with a private bus and a route made for your day.',
+    detailImages: [
+      {
+        src: 'images/about-original-mobile.webp',
+        alt: 'Maroon Wagon Charters bus with a person standing beside it',
+        label: 'The Wagon',
+      },
+      {
+        src: 'images/booze-original-mobile.webp',
+        alt: 'Maroon Wagon Charters bus parked at blue hour',
+        label: 'Your private ride',
+      },
+    ],
+    highlights: ['Private whole-bus booking', 'Custom brunch stops', 'Neon lights and sound system'],
   },
 ] as const;
 
 export const steps = [
   {
     title: 'Pick the ride',
-    text: 'Choose Red Rocks, a bar crawl, or a custom shuttle that fits your group.',
+    text: 'Choose a featured ride or send a custom route for your group.',
   },
   {
     title: 'Send the details',
@@ -103,11 +153,23 @@ export const originalShots = [
 export const faqs = [
   {
     question: 'Can I request a custom route?',
-    answer: 'Yep. Custom pickup and dropoff are part of the plan.',
+    answer: 'Yes. Custom shuttles, special events, weddings, and one-off routes are all on the table.',
   },
   {
-    question: 'Is this only for Red Rocks?',
-    answer: 'No. Red Rocks is the headline, but the bus also covers bar crawls, brewery runs, mountain shuttles, and custom group trips.',
+    question: 'How many people can ride?',
+    answer: 'Capacity depends on the ride. Mountain Shuttle groups can include up to 57 guests; other featured rides accommodate up to 33.',
+  },
+  {
+    question: 'Are the buses accessible?',
+    answer: 'Yes. All Wagon Charters buses are handicap accessible.',
+  },
+  {
+    question: 'Does every ride include the onboard bar?',
+    answer: 'No. The onboard bar is included with the Booze Cruise only, and Booze Cruise groups must be 21 or older.',
+  },
+  {
+    question: 'Can I smoke on the bus?',
+    answer: 'No. Cigarette smoking is not allowed on any Wagon Charters bus.',
   },
   {
     question: 'How do I get a quote?',

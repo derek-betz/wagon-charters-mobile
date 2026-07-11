@@ -18,13 +18,10 @@ import {
 } from './content';
 
 type RideId = (typeof featuredRides)[number]['id'];
-type SelectedRideId = RideId | '';
-type BookingStep = 'details' | 'seats' | 'summary';
-type SeatStatus = 'available' | 'unavailable';
-type Seat = {
+type SelectedRideId = RideId | 'custom' | '';
+type LayoutSeat = {
   id: string;
   label: string;
-  status: SeatStatus;
   x: number;
   y: number;
 };
@@ -37,14 +34,14 @@ const quoteEmail = 'wagoncharters@gmail.com';
 const revealDelay = (index: number): CSSProperties => ({ '--reveal-delay': `${index * 70}ms` } as CSSProperties);
 const stepIcons = [Route, Send, BusFront] as const;
 const trustProofs: { text: string; Icon: LucideIcon }[] = [
-  { text: 'The actual bus, shot on location.', Icon: BusFront },
-  { text: 'Red Rocks, bar crawls, private shuttles.', Icon: Mountain },
-  { text: 'Send the details. Get a direct reply.', Icon: ShieldCheck },
+  { text: 'Private whole-bus bookings for groups of up to 57.', Icon: BusFront },
+  { text: 'Handicap accessible with neon lights and sound.', Icon: Mountain },
+  { text: 'Custom routes and special events welcome.', Icon: ShieldCheck },
 ];
 const heroProofs = [
-  { label: 'Pickup', value: 'Custom stop' },
-  { label: 'Route', value: 'Colorado nights' },
-  { label: 'Reply', value: 'Direct quote' },
+  { label: 'Booking', value: 'Private bus' },
+  { label: 'Capacity', value: 'Up to 57' },
+  { label: 'Route', value: 'Your plan' },
 ] as const;
 const routeManifest: { eyebrow: string; title: string; text: string; Icon: LucideIcon }[] = [
   {
@@ -54,35 +51,35 @@ const routeManifest: { eyebrow: string; title: string; text: string; Icon: Lucid
     Icon: Mountain,
   },
   {
-    eyebrow: 'Night loop',
-    title: 'Bars, breweries, birthdays, and late stops',
-    text: 'Build the route around your crew instead of splitting cars.',
+    eyebrow: 'Day or night',
+    title: 'Mountain days and Denver mimosa tours',
+    text: 'Build the route around your group instead of splitting cars.',
     Icon: Route,
   },
   {
     eyebrow: 'Private charter',
-    title: 'One bus, one plan, one direct reply',
-    text: 'Send the date, headcount, and pickup. Get the next step fast.',
+    title: 'If it moves a group, send the idea',
+    text: 'Custom shuttles and special events are welcome too.',
     Icon: ShieldCheck,
   },
 ] as const;
-const redRocksSeats: Seat[] = [
-  { id: 'L1', label: 'L1', status: 'available', x: 14, y: 20 },
-  { id: 'L2', label: 'L2', status: 'available', x: 14, y: 31 },
-  { id: 'L3', label: 'L3', status: 'unavailable', x: 14, y: 42 },
-  { id: 'L4', label: 'L4', status: 'available', x: 14, y: 53 },
-  { id: 'R1', label: 'R1', status: 'available', x: 86, y: 20 },
-  { id: 'R2', label: 'R2', status: 'available', x: 86, y: 31 },
-  { id: 'R3', label: 'R3', status: 'available', x: 86, y: 42 },
-  { id: 'R4', label: 'R4', status: 'unavailable', x: 86, y: 53 },
-  { id: 'R5', label: 'R5', status: 'available', x: 86, y: 64 },
-  { id: 'R6', label: 'R6', status: 'available', x: 86, y: 75 },
-  { id: 'R7', label: 'R7', status: 'available', x: 86, y: 86 },
-  { id: 'B1', label: 'B1', status: 'available', x: 21, y: 91 },
-  { id: 'B2', label: 'B2', status: 'available', x: 34, y: 91 },
-  { id: 'B3', label: 'B3', status: 'available', x: 47, y: 91 },
-  { id: 'B4', label: 'B4', status: 'unavailable', x: 60, y: 91 },
-  { id: 'B5', label: 'B5', status: 'available', x: 73, y: 91 },
+const redRocksLayoutSeats: LayoutSeat[] = [
+  { id: 'L1', label: 'L1', x: 14, y: 20 },
+  { id: 'L2', label: 'L2', x: 14, y: 31 },
+  { id: 'L3', label: 'L3', x: 14, y: 42 },
+  { id: 'L4', label: 'L4', x: 14, y: 53 },
+  { id: 'R1', label: 'R1', x: 86, y: 20 },
+  { id: 'R2', label: 'R2', x: 86, y: 31 },
+  { id: 'R3', label: 'R3', x: 86, y: 42 },
+  { id: 'R4', label: 'R4', x: 86, y: 53 },
+  { id: 'R5', label: 'R5', x: 86, y: 64 },
+  { id: 'R6', label: 'R6', x: 86, y: 75 },
+  { id: 'R7', label: 'R7', x: 86, y: 86 },
+  { id: 'B1', label: 'B1', x: 21, y: 91 },
+  { id: 'B2', label: 'B2', x: 34, y: 91 },
+  { id: 'B3', label: 'B3', x: 47, y: 91 },
+  { id: 'B4', label: 'B4', x: 60, y: 91 },
+  { id: 'B5', label: 'B5', x: 73, y: 91 },
 ];
 
 function PolishedImage({ className = '', decoding, loading, onLoad, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
@@ -124,8 +121,6 @@ export default function App() {
   const [pickup, setPickup] = useState('');
   const [quoteStatus, setQuoteStatus] = useState<QuoteStatus | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
-  const [bookingStep, setBookingStep] = useState<BookingStep>('details');
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const rideDetailRef = useRef<HTMLElement>(null);
   const quoteRef = useRef<HTMLElement>(null);
 
@@ -141,25 +136,20 @@ export default function App() {
   }, []);
 
   const canSubmitQuote = Boolean(
-    activeRide && customerName.trim() && customerContact.trim() && preferredDate.trim() && groupSize.trim() && pickup.trim(),
+    selectedRide && customerName.trim() && customerContact.trim() && preferredDate.trim() && groupSize.trim() && pickup.trim(),
   );
-  const selectedSeatLabels = redRocksSeats
-    .filter((seat) => selectedSeats.includes(seat.id))
-    .map((seat) => seat.label);
-  const estimatedSeatDeposit = selectedSeats.length * 25;
-  const hasSelectedRedRocksSeats = selectedRide === 'red-rocks' && selectedSeats.length > 0;
+  const maxGroupSize = selectedRide === 'mountain-shuttle' ? 57 : 33;
+  const selectedRideName = selectedRide === 'custom' ? 'Custom route or special event' : activeRide?.name;
 
-  const quoteSubject = encodeURIComponent(`Quote request: ${activeRide?.name ?? 'Wagon Charters'}`);
+  const quoteSubject = encodeURIComponent(`Quote request: ${selectedRideName ?? 'Wagon Charters'}`);
   const quoteBody = encodeURIComponent(
     [
-      `Ride: ${activeRide?.name ?? 'Not selected'}`,
+      `Ride: ${selectedRideName ?? 'Not selected'}`,
       customerName ? `Name: ${customerName}` : 'Name: ',
       customerContact ? `Contact: ${customerContact}` : 'Contact: ',
       preferredDate ? `Date: ${preferredDate}` : 'Date: ',
       groupSize ? `Group size: ${groupSize}` : 'Group size: ',
       pickup ? `Pickup: ${pickup}` : 'Pickup: ',
-      hasSelectedRedRocksSeats ? `Selected seats: ${selectedSeatLabels.join(', ')}` : null,
-      hasSelectedRedRocksSeats ? `Deposit preview: $${estimatedSeatDeposit}` : null,
       '',
       'Tell me what you need and I will handle the rest.',
     ].filter(Boolean).join('\n'),
@@ -184,18 +174,12 @@ export default function App() {
 
   function openRideDetails(rideId: RideId) {
     setSelectedRide(rideId);
-    setBookingStep('details');
-    if (rideId !== 'red-rocks') {
-      setSelectedSeats([]);
-    }
     setQuoteStatus(null);
     scrollToSelector('#ride-detail');
   }
 
   function returnToRideChoices() {
     setSelectedRide('');
-    setBookingStep('details');
-    setSelectedSeats([]);
     setQuoteStatus(null);
     scrollToSelector('.ride-list');
   }
@@ -206,31 +190,10 @@ export default function App() {
     scrollToElement(quoteRef.current);
   }
 
-  function startSeatSelection() {
-    setBookingStep('seats');
+  function startCustomQuote() {
+    setSelectedRide('custom');
     setQuoteStatus(null);
-    scrollToSelector('#ride-detail');
-  }
-
-  function toggleSeat(seat: Seat) {
-    if (seat.status === 'unavailable') {
-      return;
-    }
-
-    setSelectedSeats((currentSeats) =>
-      currentSeats.includes(seat.id)
-        ? currentSeats.filter((seatId) => seatId !== seat.id)
-        : [...currentSeats, seat.id],
-    );
-  }
-
-  function confirmSeats() {
-    if (!selectedSeats.length) {
-      return;
-    }
-
-    setBookingStep('summary');
-    scrollToSelector('#ride-detail');
+    scrollToElement(quoteRef.current);
   }
 
   useEffect(() => {
@@ -305,10 +268,10 @@ export default function App() {
   }, [selectedRide]);
 
   useEffect(() => {
-    if (selectedRide) {
+    if (activeRide) {
       scrollToElement(rideDetailRef.current);
     }
-  }, [bookingStep, selectedRide]);
+  }, [activeRide]);
 
   function handleQuoteSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -354,7 +317,7 @@ export default function App() {
                 fetchPriority="high"
               />
               <figcaption>
-                <span>Denver / Red Rocks / private charter</span>
+                <span>Denver / Colorado / private charter</span>
               </figcaption>
             </figure>
           </div>
@@ -363,14 +326,14 @@ export default function App() {
             <div className="hero-route-chip" aria-label="Current route">
               <span>DEN</span>
               <i aria-hidden="true" />
-              <span>RED ROCKS</span>
+              <span>PRIVATE CHARTER</span>
               <i aria-hidden="true" />
-              <span>LATE RETURN</span>
+              <span>UP TO 57</span>
             </div>
-            <p className="hero-kicker">Red Rocks. Bar crawls. Breweries. Mountain shuttles.</p>
-            <h1 id="hero-title">Private rides for loud groups and late nights.</h1>
+            <p className="hero-kicker">Red Rocks. Booze Cruise. Mountain days. Denver Mimosa Tours.</p>
+            <h1 id="hero-title">The whole bus. Your group. Your route.</h1>
             <p className="hero-intro">
-              A real Colorado charter bus for concerts, parties, and custom routes around Denver.
+              Private Colorado charters for groups of up to 57, depending on the ride and vehicle.
             </p>
 
             <div className="hero-proof-grid" aria-label="Fast trip details">
@@ -484,6 +447,20 @@ export default function App() {
             })}
           </div>
 
+          <aside className="custom-ride-callout reveal" aria-labelledby="custom-ride-title">
+            <div>
+              <p className="section-label">Custom shuttles and special events</p>
+              <h2 id="custom-ride-title">Have another route in mind?</h2>
+              <p>
+                Weddings, corporate shuttles, special events, and one-off routes are all on the table. Send the plan
+                and get a direct answer.
+              </p>
+            </div>
+            <button className="button secondary" onClick={startCustomQuote} type="button">
+              Request a custom route
+            </button>
+          </aside>
+
           {activeRide ? (
             <article
               className="ride-detail card reveal is-visible"
@@ -496,187 +473,80 @@ export default function App() {
                 <button className="ride-back-button" onClick={returnToRideChoices} type="button">
                   Back to rides
                 </button>
-                <span>
-                  {bookingStep === 'details' ? 'Ride details' : bookingStep === 'seats' ? 'Select seats' : 'Trip summary'}
-                </span>
+                <span>Ride details</span>
               </div>
-              {activeRide.id === 'red-rocks' ? (
-                <ol className="ride-flow-steps" aria-label="Red Rocks Special booking steps">
-                  {['Details', 'Seats', 'Summary'].map((step, index) => {
-                    const isComplete =
-                      (bookingStep === 'seats' && index === 0) || (bookingStep === 'summary' && index < 2);
-                    const isCurrent =
-                      (bookingStep === 'details' && index === 0) ||
-                      (bookingStep === 'seats' && index === 1) ||
-                      (bookingStep === 'summary' && index === 2);
 
-                    return (
-                      <li className={`${isCurrent ? 'is-current' : ''} ${isComplete ? 'is-complete' : ''}`.trim()} key={step}>
-                        <span>{index + 1}</span>
-                        {step}
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : null}
+              <div className="ride-detail-copy">
+                <span className="ride-detail-label">{activeRide.name}</span>
+                <h2 id="ride-detail-title">{activeRide.detailTitle}</h2>
+                <p>{activeRide.detailCopy}</p>
+                <div className="ride-detail-actions">
+                  <button className="button primary" onClick={() => startRideQuote(activeRide.id)} type="button">
+                    Get quote
+                  </button>
+                  <span>{activeRide.route}</span>
+                </div>
+              </div>
 
-              {bookingStep === 'details' ? (
-                <>
-                  <div className="ride-detail-copy">
-                    <span className="ride-detail-label">{activeRide.name}</span>
-                    <h2 id="ride-detail-title">{activeRide.detailTitle}</h2>
-                    <p>{activeRide.detailCopy}</p>
-                    <div className={`ride-detail-actions ${activeRide.id === 'red-rocks' ? 'has-seat-action' : ''}`}>
-                      {activeRide.id === 'red-rocks' ? (
-                        <button className="button primary" onClick={startSeatSelection} type="button">
-                          Select seats
-                        </button>
-                      ) : null}
-                      <button
-                        className={`button ${activeRide.id === 'red-rocks' ? 'secondary' : 'primary'}`}
-                        onClick={() => startRideQuote(activeRide.id)}
-                        type="button"
-                      >
-                        Get quote
-                      </button>
-                      <span>{activeRide.route}</span>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`ride-detail-gallery ${
-                      activeRide.detailImages.some((image) => 'variant' in image && image.variant === 'wide')
-                        ? 'has-wide-shot'
-                        : ''
-                    }`.trim()}
-                    aria-label={`${activeRide.name} photos`}
+              <div
+                className={`ride-detail-gallery ${
+                  activeRide.detailImages.some((image) => 'variant' in image && image.variant === 'wide')
+                    ? 'has-wide-shot'
+                    : ''
+                }`.trim()}
+                aria-label={`${activeRide.name} photos`}
+              >
+                {activeRide.detailImages.map((image) => (
+                  <figure
+                    className={`ride-detail-shot ${'variant' in image ? `is-${image.variant}` : ''}`.trim()}
+                    key={image.src}
                   >
-                    {activeRide.detailImages.map((image) => (
-                      <figure
-                        className={`ride-detail-shot ${'variant' in image ? `is-${image.variant}` : ''}`.trim()}
-                        key={image.src}
-                      >
-                        <PolishedImage src={image.src} alt={image.alt} loading="lazy" />
-                        <figcaption>{image.label}</figcaption>
-                      </figure>
-                    ))}
-                  </div>
+                    <PolishedImage src={image.src} alt={image.alt} loading="lazy" />
+                    <figcaption>{image.label}</figcaption>
+                  </figure>
+                ))}
+              </div>
 
-                  <ul className="ride-detail-highlights" aria-label={`${activeRide.name} highlights`}>
-                    {activeRide.highlights.map((highlight) => (
-                      <li key={highlight}>
-                        <CircleCheck aria-hidden="true" strokeWidth={2} />
-                        <span>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : null}
+              <ul className="ride-detail-highlights" aria-label={`${activeRide.name} highlights`}>
+                {activeRide.highlights.map((highlight) => (
+                  <li key={highlight}>
+                    <CircleCheck aria-hidden="true" strokeWidth={2} />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
 
-              {activeRide.id === 'red-rocks' && bookingStep === 'seats' ? (
-                <div className="seat-selection-panel">
+              {activeRide.id === 'red-rocks' ? (
+                <section className="seat-layout-panel" aria-labelledby="red-rocks-layout-title">
                   <div className="seat-panel-head">
-                    <span className="ride-detail-label">Red Rocks Special</span>
-                    <h2 id="ride-detail-title">Pick your Red Rocks seats.</h2>
+                    <span className="ride-detail-label">Interior reference</span>
+                    <h3 id="red-rocks-layout-title">Red Rocks seating layout</h3>
+                    <p>This is a layout reference for your private whole-bus booking, not live seat inventory.</p>
                   </div>
 
-                  <div className="seat-map-shell" aria-label="Red Rocks Special seat map">
+                  <div className="seat-map-shell" aria-label="Red Rocks Special interior layout">
                     <div className="seat-map-label is-front">Front / driver</div>
-                    <div className="bar-zone">Bar</div>
-                    <div className="table-zone">Standing table</div>
+                    <div className="bar-zone">Bar top</div>
                     <div className="aisle-zone">Walkway</div>
-                    {redRocksSeats.map((seat) => {
-                      const isSelected = selectedSeats.includes(seat.id);
+                    {redRocksLayoutSeats.map((seat) => {
                       const seatStyle = {
                         '--seat-x': `${seat.x}%`,
                         '--seat-y': `${seat.y}%`,
                       } as CSSProperties & Record<'--seat-x' | '--seat-y', string>;
 
                       return (
-                        <button
-                          aria-label={`${seat.label} ${seat.status === 'unavailable' ? 'unavailable' : isSelected ? 'selected' : 'available'}`}
-                          aria-pressed={isSelected}
-                          className={`seat-button ${isSelected ? 'is-selected' : ''} ${
-                            seat.status === 'unavailable' ? 'is-unavailable' : ''
-                          }`.trim()}
-                          disabled={seat.status === 'unavailable'}
-                          key={seat.id}
-                          onClick={() => toggleSeat(seat)}
-                          style={seatStyle}
-                          type="button"
-                        >
+                        <span aria-label={`Seat ${seat.label}`} className="seat-button is-layout" key={seat.id} style={seatStyle}>
                           {seat.label}
-                        </button>
+                        </span>
                       );
                     })}
                   </div>
 
-                  <div className="seat-legend" aria-label="Seat map legend">
-                    <span><i className="is-available" />Available</span>
-                    <span><i className="is-selected" />Selected</span>
-                    <span><i className="is-unavailable" />Unavailable</span>
+                  <div className="seat-layout-note">
+                    <strong>Private bus · up to 33 guests</strong>
+                    <span>The physical bar top is shown for reference. Bar service is included with Booze Cruise only.</span>
                   </div>
-
-                  <div className="seat-selection-footer">
-                    <p>
-                      {selectedSeats.length
-                        ? `${selectedSeats.length} selected: ${selectedSeatLabels.join(', ')}`
-                        : 'Select at least one seat to continue.'}
-                    </p>
-                    <div className="seat-actions">
-                      <button className="button secondary" onClick={() => setBookingStep('details')} type="button">
-                        Back
-                      </button>
-                      <button className="button primary" disabled={!selectedSeats.length} onClick={confirmSeats} type="button">
-                        Confirm seats
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              {activeRide.id === 'red-rocks' && bookingStep === 'summary' ? (
-                <div className="trip-summary-panel">
-                  <div className="seat-panel-head">
-                    <span className="ride-detail-label">Payment preview</span>
-                    <h2 id="ride-detail-title">Review your Red Rocks seats.</h2>
-                    <p>This shows the checkout step that will connect to payment later.</p>
-                  </div>
-
-                  <div className="summary-grid">
-                    <div>
-                      <span>Ride</span>
-                      <strong>Red Rocks Special</strong>
-                    </div>
-                    <div>
-                      <span>Seat numbers</span>
-                      <strong>{selectedSeatLabels.join(', ')}</strong>
-                    </div>
-                    <div>
-                      <span>Seats selected</span>
-                      <strong>{selectedSeats.length}</strong>
-                    </div>
-                    <div>
-                      <span>Deposit preview</span>
-                      <strong>${estimatedSeatDeposit}</strong>
-                    </div>
-                  </div>
-
-                  <div className="payment-preview-card">
-                    <span>Payment</span>
-                    <strong>Card checkout placeholder</strong>
-                    <p>Payment is not connected yet, but this is where the deposit flow will live.</p>
-                  </div>
-
-                  <div className="seat-actions">
-                    <button className="button secondary" onClick={() => setBookingStep('seats')} type="button">
-                      Edit seats
-                    </button>
-                    <button className="button primary" onClick={() => startRideQuote('red-rocks')} type="button">
-                      Request this setup
-                    </button>
-                  </div>
-                </div>
+                </section>
               ) : null}
             </article>
           ) : (
@@ -755,16 +625,9 @@ export default function App() {
                     {ride.name}
                   </option>
                 ))}
+                <option value="custom">Custom route or special event</option>
               </select>
             </label>
-
-            {hasSelectedRedRocksSeats ? (
-              <div className="quote-seat-summary" aria-label="Selected Red Rocks setup">
-                <span>Selected setup</span>
-                <strong>{selectedSeatLabels.join(', ')}</strong>
-                <p>Deposit preview ${estimatedSeatDeposit}</p>
-              </div>
-            ) : null}
 
             <label htmlFor="quote-name">
               Your name
@@ -810,7 +673,7 @@ export default function App() {
               <input
                 id="quote-group-size"
                 inputMode="numeric"
-                max="60"
+                max={maxGroupSize}
                 min="1"
                 name="group-size"
                 required
@@ -854,7 +717,7 @@ export default function App() {
                 Get my quote
               </button>
             </div>
-            <p className="quote-reassurance">Free quote · Denver groups · No spam.</p>
+            <p className="quote-reassurance">Private whole-bus quote · Capacity varies by ride · No spam.</p>
           </form>
         </section>
 
@@ -878,7 +741,7 @@ export default function App() {
         <footer className="footer">
           <div className="footer-brand">
             <p>Wagon Charters</p>
-            <span>Denver rides for Red Rocks and bar crawls.</span>
+            <span>Private Colorado rides for groups of up to 57.</span>
           </div>
           <nav className="footer-links" aria-label="Footer links">
             <a href="#rides">Rides</a>
@@ -896,7 +759,7 @@ export default function App() {
           aria-label="Quick actions"
           className={`sticky-cta ${showStickyCta ? 'is-visible' : ''}`}
         >
-          <span className="sticky-note">Free quote for Denver groups</span>
+          <span className="sticky-note">Private bus · up to 57 guests</span>
           <a className="button primary" href="#quote" tabIndex={showStickyCta ? undefined : -1}>
             GET A QUOTE
           </a>
