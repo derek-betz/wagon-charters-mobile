@@ -1,0 +1,33 @@
+Alright here’s everything I still need from you so we can get this site live:
+
+☐ Invite me as an admin/collaborator on Squarespace so I can handle wagoncharters.com and the DNS. Don’t text me your actual password.
+
+☐ Make sure the domain renewal/payment is current. We can cancel the old Squarespace website plan after the new site is live if it’s no longer needed.
+
+☐ Confirm wagoncharters@gmail.com is where quote requests should go. Also send me the public phone number and any social links you want shown.
+
+☐ Pick how you want to invoice and get paid: Square, Stripe, or Squarespace Payments. I also need the deposit amount, when final payment is due, cancellation/refund rules, and whether tax or gratuity gets added.
+
+☐ Confirm whether everything stays quote-only or if you want any starting prices/rates shown.
+
+A few things on the site don’t totally line up yet, so I need you to clarify these:
+
+☐ Is the 57-seat Mountain Shuttle a separate coach, and are Red Rocks, Booze Cruise, and Mimosa Tours all 33 people max?
+
+☐ The Red Rocks diagram shows 21 individual seat spots plus the corner bench. Does that bus still legally hold 33 passengers?
+
+☐ What exactly does “all drinks included” cover on the Booze Cruise? Alcohol, mixers, water, everything? Are there any limits?
+
+☐ Are mimosas included with the Mimosa Tour, is it BYOB, or are the drinks purchased at the stops?
+
+☐ Are all of the vehicles actually wheelchair accessible? Which buses have the neon lighting and sound system?
+
+☐ Does the no-smoking rule also include vaping and weed?
+
+☐ Approve the photos and send me a real Mountain Shuttle coach photo if you don’t want us using the generated one.
+
+☐ Send me the official business name, service area, normal response time, minimum booking notice, and any customer rules I’m missing.
+
+☐ Approve basic privacy, terms, alcohol, cancellation, and refund language.
+
+Once I have all of that I can handle permanent hosting, the domain and SSL, a real quote form with spam protection, the invoice/payment setup, analytics, Google Search Console, SEO files, final phone/desktop testing, and launch.

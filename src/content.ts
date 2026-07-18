@@ -29,16 +29,16 @@ export const featuredRides = [
   {
     id: 'booze-cruise',
     name: 'Booze Cruise',
-    blurb: 'A flexible ride for bar crawls, brewery loops, birthdays, and late nights with a dedicated driver and onboard bar.',
+    blurb: 'A flexible ride for bar crawls, brewery loops, birthdays, and late nights with a dedicated driver, onboard bar, and all drinks included.',
     badge: 'Best for groups',
     route: 'Custom pickup and dropoff',
     accent: 'Night route',
     image: 'images/booze-card-mobile.webp',
     imageAlt: 'Maroon charter bus at blue hour',
-    details: ['Private whole bus', '21+ only', 'Onboard bar included'],
+    details: ['Private whole bus', '21+ only', 'All drinks included'],
     detailTitle: 'A private bar crawl with the ride built in.',
     detailCopy:
-      'Reserve the whole bus for your 21+ group, set the route, and let the included onboard bar, neon lights, and sound system make the ride part of the party.',
+      'Reserve the whole bus for your 21+ group, set the route, and let the included drinks, onboard bar, neon lights, and sound system make the ride part of the party.',
     detailImages: [
       {
         src: 'images/booze-cruise-party-mobile.webp',
@@ -57,7 +57,7 @@ export const featuredRides = [
         label: 'Inside',
       },
     ],
-    highlights: ['Onboard bar included', 'Neon lights and sound system', 'No cigarette smoking'],
+    highlights: ['All drinks included', 'Onboard bar included', 'Neon lights and sound system'],
   },
   {
     id: 'mountain-shuttle',
@@ -68,7 +68,7 @@ export const featuredRides = [
     accent: 'Mountain route',
     image: 'images/mountain-shuttle-i70-ai.webp',
     imageAlt: 'Red MCI motorcoach traveling on Interstate 70 through Glenwood Canyon',
-    details: ['Private whole bus', 'Up to 57 guests', 'Custom timing'],
+    details: ['Private whole bus', 'Up to 57 guests', 'Custom itinerary'],
     detailTitle: 'Mountain transportation built around your group.',
     detailCopy:
       'Book the entire bus, choose the pickup and mountain destination, and keep everyone on one schedule for the ride out and back.',
@@ -165,7 +165,7 @@ export const faqs = [
   },
   {
     question: 'Does every ride include the onboard bar?',
-    answer: 'No. The onboard bar is included with the Booze Cruise only, and Booze Cruise groups must be 21 or older.',
+    answer: 'No. The onboard bar and all drinks are included with the Booze Cruise only, and Booze Cruise groups must be 21 or older.',
   },
   {
     question: 'Can I smoke on the bus?',

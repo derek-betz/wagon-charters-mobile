@@ -21,9 +21,11 @@ type RideId = (typeof featuredRides)[number]['id'];
 type SelectedRideId = RideId | 'custom' | '';
 type LayoutSeat = {
   id: string;
-  label: string;
   x: number;
   y: number;
+  facing: 'front' | 'rear';
+  group?: 'rear-bench' | 'coach-seat' | 'coach-back';
+  label?: string;
 };
 type QuoteStatus = {
   kind: 'hint' | 'success';
@@ -64,22 +66,51 @@ const routeManifest: { eyebrow: string; title: string; text: string; Icon: Lucid
   },
 ] as const;
 const redRocksLayoutSeats: LayoutSeat[] = [
-  { id: 'L1', label: 'L1', x: 14, y: 20 },
-  { id: 'L2', label: 'L2', x: 14, y: 31 },
-  { id: 'L3', label: 'L3', x: 14, y: 42 },
-  { id: 'L4', label: 'L4', x: 14, y: 53 },
-  { id: 'R1', label: 'R1', x: 86, y: 20 },
-  { id: 'R2', label: 'R2', x: 86, y: 31 },
-  { id: 'R3', label: 'R3', x: 86, y: 42 },
-  { id: 'R4', label: 'R4', x: 86, y: 53 },
-  { id: 'R5', label: 'R5', x: 86, y: 64 },
-  { id: 'R6', label: 'R6', x: 86, y: 75 },
-  { id: 'R7', label: 'R7', x: 86, y: 86 },
-  { id: 'B1', label: 'B1', x: 21, y: 91 },
-  { id: 'B2', label: 'B2', x: 34, y: 91 },
-  { id: 'B3', label: 'B3', x: 47, y: 91 },
-  { id: 'B4', label: 'B4', x: 60, y: 91 },
-  { id: 'B5', label: 'B5', x: 73, y: 91 },
+  { id: 'front-1', x: 24, y: 18, facing: 'rear' },
+  { id: 'front-2', x: 39, y: 18, facing: 'rear' },
+  { id: 'front-3', x: 24, y: 26, facing: 'front' },
+  { id: 'front-4', x: 39, y: 26, facing: 'front' },
+  { id: 'front-5', x: 24, y: 34, facing: 'rear' },
+  { id: 'front-6', x: 39, y: 34, facing: 'rear' },
+  { id: 'entry-1', x: 78, y: 39, facing: 'rear' },
+  { id: 'entry-2', x: 78, y: 49, facing: 'front' },
+  { id: 'salon-left-1', x: 26, y: 73, facing: 'front' },
+  { id: 'salon-left-2', x: 40, y: 73, facing: 'front' },
+  { id: 'salon-left-3', x: 26, y: 80, facing: 'rear' },
+  { id: 'salon-left-4', x: 40, y: 80, facing: 'rear' },
+  { id: 'salon-right-1', x: 68, y: 73, facing: 'front' },
+  { id: 'salon-right-2', x: 82, y: 73, facing: 'front' },
+  { id: 'salon-right-3', x: 68, y: 80, facing: 'rear' },
+  { id: 'salon-right-4', x: 82, y: 80, facing: 'rear' },
+  { id: 'rear-1', x: 24, y: 91, facing: 'front', group: 'rear-bench' },
+  { id: 'rear-2', x: 37, y: 91, facing: 'front', group: 'rear-bench' },
+  { id: 'rear-3', x: 50, y: 91, facing: 'front', group: 'rear-bench' },
+  { id: 'rear-4', x: 63, y: 91, facing: 'front', group: 'rear-bench' },
+  { id: 'rear-5', x: 76, y: 91, facing: 'front', group: 'rear-bench' },
+];
+const mountainShuttleLayoutSeats: LayoutSeat[] = [
+  ...Array.from({ length: 13 }, (_, rowIndex) =>
+    [22, 35, 65, 78].map((x, seatIndex) => {
+      const seatNumber = rowIndex * 4 + seatIndex + 1;
+
+      return {
+        id: `coach-${seatNumber}`,
+        x,
+        y: 19 + rowIndex * 5.4,
+        facing: 'front' as const,
+        group: 'coach-seat' as const,
+        label: String(seatNumber),
+      };
+    }),
+  ).flat(),
+  ...[18, 34, 50, 66, 82].map((x, index) => ({
+    id: `coach-${index + 53}`,
+    x,
+    y: 91,
+    facing: 'front' as const,
+    group: 'coach-back' as const,
+    label: String(index + 53),
+  })),
 ];
 
 function PolishedImage({ className = '', decoding, loading, onLoad, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
@@ -521,13 +552,28 @@ export default function App() {
                   <div className="seat-panel-head">
                     <span className="ride-detail-label">Interior reference</span>
                     <h3 id="red-rocks-layout-title">Red Rocks seating layout</h3>
-                    <p>This is a layout reference for your private whole-bus booking, not live seat inventory.</p>
+                    <p>An orientation guide to the interior. Arrows show which way each seat faces.</p>
                   </div>
 
-                  <div className="seat-map-shell" aria-label="Red Rocks Special interior layout">
-                    <div className="seat-map-label is-front">Front / driver</div>
-                    <div className="bar-zone">Bar top</div>
-                    <div className="aisle-zone">Walkway</div>
+                  <div
+                    className="seat-map-shell"
+                    role="img"
+                    aria-label="Bus interior diagram. The front has the driver on the left and entry door on the right. Six alternating seats sit at the front left, a trapezoid bench fills the front-right corner, two single seats line the right side, an L-shaped bar runs along the left, two four-seat groups sit behind the bar, and a five-place bench spans the rear."
+                  >
+                    <div className="seat-map-label is-front" aria-hidden="true">Front of bus</div>
+                    <div className="driver-zone" aria-hidden="true">
+                      <i />
+                      <span>Driver</span>
+                    </div>
+                    <div className="entry-door" aria-hidden="true">
+                      <i />
+                      <span>Door</span>
+                    </div>
+                    <div className="corner-bench" aria-hidden="true">
+                      <span>Bench</span>
+                    </div>
+                    <div className="bar-zone" aria-hidden="true"><span>Bar top</span></div>
+                    <div className="aisle-zone" aria-hidden="true"><span>Aisle</span></div>
                     {redRocksLayoutSeats.map((seat) => {
                       const seatStyle = {
                         '--seat-x': `${seat.x}%`,
@@ -535,17 +581,74 @@ export default function App() {
                       } as CSSProperties & Record<'--seat-x' | '--seat-y', string>;
 
                       return (
-                        <span aria-label={`Seat ${seat.label}`} className="seat-button is-layout" key={seat.id} style={seatStyle}>
-                          {seat.label}
+                        <span
+                          aria-hidden="true"
+                          className={`seat-module faces-${seat.facing} ${seat.group ? `is-${seat.group}` : ''}`.trim()}
+                          key={seat.id}
+                          style={seatStyle}
+                        >
+                          <i />
                         </span>
                       );
                     })}
+                    <div className="seat-map-label is-rear" aria-hidden="true">Rear</div>
+                  </div>
+
+                  <div className="seat-map-legend" aria-hidden="true">
+                    <span><i className="seat-key"><b /></i>Seat direction</span>
+                    <span><i className="bar-key" />Bar top</span>
                   </div>
 
                   <div className="seat-layout-note">
                     <strong>Private bus · up to 33 guests</strong>
-                    <span>The physical bar top is shown for reference. Bar service is included with Booze Cruise only.</span>
+                    <span>Diagram is not to scale or live seat inventory. Bar service is included with Booze Cruise only.</span>
                   </div>
+                </section>
+              ) : null}
+
+              {activeRide.id === 'mountain-shuttle' ? (
+                <section className="seat-layout-panel" aria-labelledby="mountain-shuttle-layout-title">
+                  <div className="seat-panel-head">
+                    <span className="ride-detail-label">Coach interior</span>
+                    <h3 id="mountain-shuttle-layout-title">Mountain Shuttle seat map</h3>
+                  </div>
+
+                  <div
+                    className="seat-map-shell is-coach"
+                    role="img"
+                    aria-label="57-seat coach diagram. Thirteen rows each have two seats on the left and two seats on the right of a center aisle. Five seats span the rear row."
+                  >
+                    <div className="seat-map-label is-front" aria-hidden="true">Front of coach</div>
+                    <div className="driver-zone" aria-hidden="true">
+                      <i />
+                      <span>Driver</span>
+                    </div>
+                    <div className="entry-door" aria-hidden="true">
+                      <i />
+                      <span>Door</span>
+                    </div>
+                    <div className="aisle-zone is-coach-aisle" aria-hidden="true"><span>Aisle</span></div>
+                    {mountainShuttleLayoutSeats.map((seat) => {
+                      const seatStyle = {
+                        '--seat-x': `${seat.x}%`,
+                        '--seat-y': `${seat.y}%`,
+                      } as CSSProperties & Record<'--seat-x' | '--seat-y', string>;
+
+                      return (
+                        <span
+                          aria-hidden="true"
+                          className={`seat-module is-${seat.group}`}
+                          key={seat.id}
+                          style={seatStyle}
+                        >
+                          <b>{seat.label}</b>
+                        </span>
+                      );
+                    })}
+                    <div className="seat-map-label is-rear" aria-hidden="true">Rear row</div>
+                  </div>
+
+                  <p className="seat-map-caption">Reference only; final vehicle configuration may vary.</p>
                 </section>
               ) : null}
             </article>
